@@ -1,0 +1,341 @@
+{
+  "items": {
+    "cattleman_revolver": {
+      "id": "cattleman_revolver",
+      "name": "Cattleman Revolver",
+      "category": "weapon",
+      "shop": "gunsmith",
+      "price": {
+        "cash": {
+          "value": 50,
+          "confidence": "MEDIUM",
+          "sources": [
+            {
+              "type": "GAME_TEST",
+              "date": "2024-12-01",
+              "verified_by": "chad_lance"
+            },
+            {
+              "type": "REDDIT",
+              "date": "2024-11-28",
+              "url": "https://reddit.com/r/RedDeadOnline"
+            }
+          ],
+          "last_verified": "2024-12-01",
+          "patch_version": "1.29"
+        }
+      },
+      "type": "Revolver",
+      "confidence": "MEDIUM",
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "chad_lance"
+        },
+        {
+          "type": "REDDIT",
+          "date": "2024-11-28",
+          "url": "https://reddit.com/r/RedDeadOnline"
+        }
+      ],
+      "last_verified": "2024-12-01",
+      "patch_version": "1.29"
+    },
+    "carcano_rifle": {
+      "id": "carcano_rifle",
+      "name": "Carcano Rifle",
+      "category": "weapon",
+      "shop": "gunsmith",
+      "price": {
+        "cash": {
+          "value": 456,
+          "confidence": "MEDIUM",
+          "sources": [
+            {
+              "type": "GAME_TEST",
+              "date": "2024-12-01",
+              "verified_by": "chad_lance"
+            },
+            {
+              "type": "REDDIT",
+              "date": "2024-11-28",
+              "url": "https://reddit.com/r/RedDeadOnline"
+            },
+            {
+              "type": "WIKI",
+              "date": "2024-12-02",
+              "url": "https://reddead.fandom.com"
+            }
+          ],
+          "last_verified": "2024-12-01",
+          "patch_version": "1.29"
+        }
+      },
+      "type": "Rifle",
+      "confidence": "MEDIUM",
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "chad_lance"
+        },
+        {
+          "type": "REDDIT",
+          "date": "2024-11-28",
+          "url": "https://reddit.com/r/RedDeadOnline"
+        },
+        {
+          "type": "WIKI",
+          "date": "2024-12-02",
+          "url": "https://reddead.fandom.com"
+        }
+      ],
+      "last_verified": "2024-12-01",
+      "patch_version": "1.29"
+    },
+    "metal_detector": {
+      "id": "metal_detector",
+      "name": "Metal Detector",
+      "category": "tool",
+      "shop": "fence",
+      "price": {
+        "cash": {
+          "value": 700,
+          "confidence": "MEDIUM",
+          "sources": [
+            {
+              "type": "GAME_TEST",
+              "date": "2024-12-01",
+              "verified_by": "chad_lance"
+            }
+          ],
+          "last_verified": "2024-12-01",
+          "patch_version": "1.29"
+        }
+      },
+      "type": "Tool",
+      "confidence": "MEDIUM",
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "chad_lance"
+        }
+      ],
+      "last_verified": "2024-12-01",
+      "patch_version": "1.29"
+    }
+  },
+  "animals": {
+    "buck_whitetail": {
+      "id": "buck_whitetail",
+      "name": "White Tail Buck",
+      "species": "Deer",
+      "size": "large",
+      "ai_rating": {
+        "value": 7,
+        "confidence": "MEDIUM",
+        "sources": [
+          {
+            "type": "GAME_TEST",
+            "date": "2024-12-01",
+            "verified_by": "hunting_team"
+          }
+        ],
+        "last_verified": "2025-12-04",
+        "patch_version": "UNKNOWN"
+      },
+      "health": {
+        "value": 100,
+        "confidence": "MEDIUM",
+        "sources": [
+          {
+            "type": "GAME_TEST",
+            "date": "2024-12-01",
+            "verified_by": "hunting_team"
+          }
+        ],
+        "last_verified": "2025-12-04",
+        "patch_version": "UNKNOWN"
+      },
+      "materials": [
+        "perfect_fur",
+        "antlers"
+      ],
+      "spawns": [
+        "Big Valley",
+        "West Elizabeth"
+      ],
+      "can_study": true,
+      "confidence": "MEDIUM",
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "hunting_team"
+        }
+      ],
+      "last_verified": "2025-12-04",
+      "patch_version": "UNKNOWN"
+    },
+    "alligator": {
+      "id": "alligator",
+      "name": "Alligator",
+      "species": "Reptile",
+      "size": "large",
+      "ai_rating": {
+        "value": 6,
+        "confidence": "MEDIUM",
+        "sources": [
+          {
+            "type": "GAME_TEST",
+            "date": "2024-12-01",
+            "verified_by": "hunting_team"
+          }
+        ],
+        "last_verified": "2025-12-04",
+        "patch_version": "UNKNOWN"
+      },
+      "health": {
+        "value": 120,
+        "confidence": "MEDIUM",
+        "sources": [
+          {
+            "type": "GAME_TEST",
+            "date": "2024-12-01",
+            "verified_by": "hunting_team"
+          }
+        ],
+        "last_verified": "2025-12-04",
+        "patch_version": "UNKNOWN"
+      },
+      "materials": [
+        "perfect_skin",
+        "tooth"
+      ],
+      "spawns": [
+        "Lagras",
+        "Bayou Nwa"
+      ],
+      "can_study": true,
+      "confidence": "MEDIUM",
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "hunting_team"
+        }
+      ],
+      "last_verified": "2025-12-04",
+      "patch_version": "UNKNOWN"
+    }
+  },
+  "fast_travel_nodes": {},
+  "fast_travel_routes": [],
+  "collector_items": {},
+  "roles": {
+    "bounty_hunter": {
+      "id": "bounty_hunter",
+      "name": "Bounty Hunter",
+      "mentor_npc": "Stranger",
+      "unlock_cost_gold": {
+        "value": 15,
+        "confidence": "MEDIUM",
+        "sources": [
+          {
+            "type": "GAME_TEST",
+            "date": "2024-12-01",
+            "verified_by": "role_team"
+          }
+        ],
+        "last_verified": "2025-12-04"
+      },
+      "player_rank_required": {
+        "value": 5,
+        "confidence": "MEDIUM",
+        "sources": [
+          {
+            "type": "GAME_TEST",
+            "date": "2024-12-01",
+            "verified_by": "role_team"
+          }
+        ],
+        "last_verified": "2025-12-04"
+      },
+      "max_rank": {
+        "value": 20,
+        "confidence": "MEDIUM",
+        "sources": [
+          {
+            "type": "GAME_TEST",
+            "date": "2024-12-01",
+            "verified_by": "role_team"
+          }
+        ],
+        "last_verified": "2025-12-04"
+      },
+      "rank_benefits": [],
+      "confidence": "MEDIUM",
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "role_team"
+        }
+      ],
+      "last_verified": "2025-12-04"
+    },
+    "trader": {
+      "id": "trader",
+      "name": "Trader",
+      "mentor_npc": "Cripps",
+      "unlock_cost_gold": {
+        "value": 10,
+        "confidence": "MEDIUM",
+        "sources": [
+          {
+            "type": "GAME_TEST",
+            "date": "2024-12-01",
+            "verified_by": "role_team"
+          }
+        ],
+        "last_verified": "2025-12-04"
+      },
+      "player_rank_required": {
+        "value": 1,
+        "confidence": "MEDIUM",
+        "sources": [
+          {
+            "type": "GAME_TEST",
+            "date": "2024-12-01",
+            "verified_by": "role_team"
+          }
+        ],
+        "last_verified": "2025-12-04"
+      },
+      "max_rank": {
+        "value": 20,
+        "confidence": "MEDIUM",
+        "sources": [
+          {
+            "type": "GAME_TEST",
+            "date": "2024-12-01",
+            "verified_by": "role_team"
+          }
+        ],
+        "last_verified": "2025-12-04"
+      },
+      "rank_benefits": [],
+      "confidence": "MEDIUM",
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "role_team"
+        }
+      ],
+      "last_verified": "2025-12-04"
+    }
+  }
+}

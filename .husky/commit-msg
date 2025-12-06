@@ -1,0 +1,26 @@
+#!/bin/sh
+# ═══════════════════════════════════════════════════════════════
+# INFINITE HORIZON PROTOCOL - COMMIT MESSAGE VALIDATOR
+# Code is never "final" - reject commits that claim otherwise
+# ═══════════════════════════════════════════════════════════════
+
+commit_msg=$(cat "$1")
+
+# Check for forbidden "finality" words (case-insensitive)
+if echo "$commit_msg" | grep -qi "\bfinal\b\|finished\|complete[d]*$\|done$"; then
+  echo ""
+  echo "⛔ PROTOCOL VIOLATION: The Infinite Horizon"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "Forbidden terms detected: 'final', 'finished', 'complete', 'done'"
+  echo ""
+  echo "Code is a living organism. No commit is ever 'final'."
+  echo ""
+  echo "REWRITE SUGGESTIONS:"
+  echo "  ❌ 'Final fix for bug'     → ✅ 'Iteration on bug fix'"
+  echo "  ❌ 'Finished feature'      → ✅ 'Feature baseline established'"
+  echo "  ❌ 'Complete refactor'     → ✅ 'Refactor v1.0 deployed'"
+  echo ""
+  exit 1
+fi
+
+exit 0

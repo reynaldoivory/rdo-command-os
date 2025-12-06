@@ -1,0 +1,51 @@
+{
+  "formulas": {
+    "bounty_payout_formula": {
+      "id": "bounty_payout_formula",
+      "system": "bounty_hunter",
+      "name": "Bounty Payout Calculation",
+      "formula": "P = B × M_tier × M_status × M_rank",
+      "description": "Total payout is base bounty multiplied by tier, status, and rank multipliers",
+      "variables": [
+        "base_payout",
+        "tier_multiplier",
+        "status_multiplier",
+        "rank_multiplier"
+      ],
+      "examples": [],
+      "confidence": "MEDIUM",
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "testing_team"
+        }
+      ],
+      "patch_version": "1.29",
+      "last_verified": "2024-12-01"
+    },
+    "trader_delivery_formula": {
+      "id": "trader_delivery_formula",
+      "system": "trader",
+      "name": "Trader Delivery Payout",
+      "formula": "P = (goods / 100) × 625 + time_bonus + distance_bonus",
+      "description": "Trader delivery payout based on goods count with bonuses for time and distance",
+      "variables": [
+        "goods_count",
+        "time_minutes",
+        "delivery_distance"
+      ],
+      "examples": [],
+      "confidence": "MEDIUM",
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "testing_team"
+        }
+      ],
+      "patch_version": "1.29",
+      "last_verified": "2024-12-01"
+    }
+  }
+}

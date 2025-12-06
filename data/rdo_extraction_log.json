@@ -1,0 +1,202 @@
+{
+  "version": "2.0",
+  "generated_date": "2024-12-03",
+  "items": [
+    {
+      "id": "cattleman_revolver",
+      "name": "Cattleman Revolver",
+      "category": "weapon",
+      "shop": "gunsmith",
+      "type": "Revolver",
+      "price": 50.00,
+      "gold_price": 0,
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "chad_lance"
+        },
+        {
+          "type": "REDDIT",
+          "date": "2024-11-28",
+          "url": "https://reddit.com/r/RedDeadOnline"
+        }
+      ],
+      "patch_version": "1.29",
+      "last_verified": "2024-12-01"
+    },
+    {
+      "id": "carcano_rifle",
+      "name": "Carcano Rifle",
+      "category": "weapon",
+      "shop": "gunsmith",
+      "type": "Rifle",
+      "price": 456.00,
+      "gold_price": 0,
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "chad_lance"
+        },
+        {
+          "type": "REDDIT",
+          "date": "2024-11-28",
+          "url": "https://reddit.com/r/RedDeadOnline"
+        },
+        {
+          "type": "WIKI",
+          "date": "2024-12-02",
+          "url": "https://reddead.fandom.com"
+        }
+      ],
+      "patch_version": "1.29",
+      "last_verified": "2024-12-01"
+    },
+    {
+      "id": "metal_detector",
+      "name": "Metal Detector",
+      "category": "tool",
+      "shop": "fence",
+      "type": "Tool",
+      "price": 700.00,
+      "gold_price": 0,
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "chad_lance"
+        }
+      ],
+      "patch_version": "1.29",
+      "last_verified": "2024-12-01"
+    }
+  ],
+  "economic_formulas": [
+    {
+      "id": "bounty_payout_formula",
+      "system": "bounty_hunter",
+      "name": "Bounty Payout Calculation",
+      "formula": "P = B × M_tier × M_status × M_rank",
+      "description": "Total payout is base bounty multiplied by tier, status, and rank multipliers",
+      "variables": [
+        "base_payout",
+        "tier_multiplier",
+        "status_multiplier",
+        "rank_multiplier"
+      ],
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "testing_team"
+        }
+      ],
+      "patch_version": "1.29",
+      "last_verified": "2024-12-01"
+    },
+    {
+      "id": "trader_delivery_formula",
+      "system": "trader",
+      "name": "Trader Delivery Payout",
+      "formula": "P = (goods / 100) × 625 + time_bonus + distance_bonus",
+      "description": "Trader delivery payout based on goods count with bonuses for time and distance",
+      "variables": [
+        "goods_count",
+        "time_minutes",
+        "delivery_distance"
+      ],
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "testing_team"
+        }
+      ],
+      "patch_version": "1.29",
+      "last_verified": "2024-12-01"
+    }
+  ],
+  "animals": [
+    {
+      "id": "buck_whitetail",
+      "name": "White Tail Buck",
+      "species": "Deer",
+      "size": "large",
+      "ai_rating": 7,
+      "health": 100,
+      "materials": [
+        "perfect_fur",
+        "antlers"
+      ],
+      "spawns": [
+        "Big Valley",
+        "West Elizabeth"
+      ],
+      "can_study": true,
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "hunting_team"
+        }
+      ]
+    },
+    {
+      "id": "alligator",
+      "name": "Alligator",
+      "species": "Reptile",
+      "size": "large",
+      "ai_rating": 6,
+      "health": 120,
+      "materials": [
+        "perfect_skin",
+        "tooth"
+      ],
+      "spawns": [
+        "Lagras",
+        "Bayou Nwa"
+      ],
+      "can_study": true,
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "hunting_team"
+        }
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "id": "bounty_hunter",
+      "name": "Bounty Hunter",
+      "mentor_npc": "Stranger",
+      "unlock_cost_gold": 15,
+      "player_rank_required": 5,
+      "max_rank": 20,
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "role_team"
+        }
+      ]
+    },
+    {
+      "id": "trader",
+      "name": "Trader",
+      "mentor_npc": "Cripps",
+      "unlock_cost_gold": 10,
+      "player_rank_required": 1,
+      "max_rank": 20,
+      "sources": [
+        {
+          "type": "GAME_TEST",
+          "date": "2024-12-01",
+          "verified_by": "role_team"
+        }
+      ]
+    }
+  ]
+}

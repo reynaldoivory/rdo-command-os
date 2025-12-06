@@ -1,0 +1,79 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# INFINITE HORIZON GUARD - CI/CD Pipeline
+# Enforces protocol compliance on every pull request
+# ═══════════════════════════════════════════════════════════════════════════
+
+name: Infinite Horizon Guard
+
+on: 
+  pull_request:
+    branches: [main, master]
+  push:
+    branches: [main, master]
+
+jobs:
+  # ═══ PROTOCOL COMPLIANCE CHECK ═══
+  protocol-check:
+    name: Protocol Compliance
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Check for Mandatory Up-Level
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const body = context.payload.pull_request.body || "";
+            const bodyLower = body.toLowerCase();
+            
+            const hasUpLevel = bodyLower.includes("technical recommendation") || 
+                               bodyLower.includes("next tier");
+            
+            if (!hasUpLevel) {
+              core.setFailed(`
+            ⛔ PROTOCOL VIOLATION: The Infinite Horizon
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            
+            PR description lacks a 'Technical Recommendation' for the next iteration.
+            
+            Per protocol, every PR must conclude with a specific, technical 
+            recommendation to escalate the project to the next tier.
+            
+            REQUIRED FORMAT:
+            ### Next Tier Recommendation
+            > **Technical Recommendation:** [Your specific upgrade/refactor here]
+            
+            Code is a living organism. Deployment is just a state change.
+              `);
+            } else {
+              console.log("✅ Protocol compliance verified: Technical Recommendation found.");
+            }
+
+  # ═══ BUILD VERIFICATION ═══
+  build:
+    name: Build Verification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Lint Check
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Report Build Size
+        run: |
+          echo "## Build Output" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          ls -lh dist/assets/*.js dist/assets/*.css >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

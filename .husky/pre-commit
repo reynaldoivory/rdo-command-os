@@ -1,0 +1,32 @@
+#!/bin/sh
+# ═══════════════════════════════════════════════════════════════
+# INFINITE HORIZON PROTOCOL - PRE-COMMIT GUARD
+# Enforces code quality and bundle size budgets before commit
+# ═══════════════════════════════════════════════════════════════
+
+echo "⚙️  Running pre-commit checks..."
+
+# Lint check
+npm run lint || {
+  echo "⛔ ESLint violations detected. Fix before committing."
+  exit 1
+}
+
+# Build first (required for size-limit)
+npm run build || {
+  echo "⛔ Build failed. Fix errors before committing."
+  exit 1
+}
+
+# Bundle size budget check
+npm run check-size || {
+  echo ""
+  echo "⛔ BUDGET VIOLATION: Bundle size exceeds limits!"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "Run 'npm run analyze' to visualize the treemap"
+  echo "and identify which imports are killing your budget."
+  echo ""
+  exit 1
+}
+
+echo "✅ All pre-commit checks passed."
