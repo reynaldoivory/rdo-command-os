@@ -1,4 +1,5 @@
 // FILE: src/App.jsx
+// RDO COMMAND OS.25 - The Infinite Horizon
 import React, { useState, useMemo } from 'react';
 import { 
   User, DollarSign, Coins, Star, Lock, Unlock, ShoppingCart, TrendingUp, 
