@@ -50,6 +50,87 @@ export function analyzeEfficiency(profile, catalog, cart) {
   metrics.cashUtilization = profile.cash > 0 ? (cartTotals.cash / profile.cash) * 100 : 0;
   metrics.goldUtilization = profile.gold > 0 ? (cartTotals.gold / profile.gold) * 100 : 0;
 
+  // ═══ PHASE 0: FRESH SPAWN DETECTION (The First 15 Gold) ═══
+  // This is the hardest part of the game. Wrong spending here sets you back weeks.
+  
+  const hasAnyRole = Object.values(profile.roles || {}).some(xp => xp > 0);
+  const isFreshSpawn = profile.gold < 15 && !hasAnyRole && profile.rank < 15;
+
+  if (isFreshSpawn) {
+    metrics.bottleneck = 'GOLD (CRITICAL)';
+    metrics.efficiency = 20; // Fresh spawns are inherently inefficient
+
+    // Primary objective
+    recommendations.push({
+      priority: 0,
+      title: '🎯 PRIMARY OBJECTIVE: 15 Gold Bars',
+      desc: 'Do NOT spend Gold on cosmetics. You need exactly 15.0 Gold to unlock the Bounty Hunter role. This is the ONLY role that pays Gold back.',
+      action: 'Grind Stranger Missions (wait until 12:00 timer for max payout)',
+      type: 'critical',
+    });
+
+    // Story missions for cash
+    if (profile.cash < 200) {
+      recommendations.push({
+        priority: 0,
+        title: '📜 Story Missions (Land of Opportunities)',
+        desc: 'Complete the yellow Story Missions immediately. They pay a first-time cash bonus (~$200) that funds your initial weapons.',
+        action: 'Play Story from Online menu',
+        type: 'critical',
+      });
+    }
+
+    // Daily streak importance
+    recommendations.push({
+      priority: 1,
+      title: '📅 Daily Challenge Streak (NEVER BREAK)',
+      desc: 'Complete at least 1 Daily Challenge every 24 hours. After 21 days, you earn 2.5x Gold. This is your ticket to escaping poverty.',
+      action: 'Do 1 Daily today - ANY daily',
+      type: 'warning',
+    });
+  }
+
+  // Bolt Action Rifle guidance (Rank 1-10)
+  if (profile.rank < 7 && profile.rank >= 1) {
+    recommendations.push({
+      priority: 2,
+      title: '🔫 Save for Bolt Action Rifle (Rank 7)',
+      desc: 'Do NOT buy clothes or cosmetics. The Bolt Action Rifle ($216) is the most versatile weapon in the game. You need this to hunt and defend yourself.',
+      action: 'Hoard Cash until Rank 7',
+      type: 'warning',
+    });
+  }
+
+  // Bolt Action unlock notification
+  const boltAction = catalog.find(i => i.id === 'w_rif_bolt');
+  const hasBoltInCart = boltAction && cart.includes(boltAction.id);
+  
+  if (profile.rank >= 7 && profile.rank < 15 && !hasBoltInCart && profile.cash >= 216) {
+    recommendations.push({
+      priority: 1,
+      title: '✅ PURCHASE NOW: Bolt Action Rifle',
+      desc: 'You have unlocked and can afford the Bolt Action Rifle. This is your #1 priority purchase. Buy it immediately.',
+      action: 'Add to cart and purchase',
+      type: 'critical',
+    });
+  }
+
+  // Varmint Rifle for hunting
+  if (profile.rank >= 8 && profile.rank < 20) {
+    const varmint = catalog.find(i => i.id === 'w_rif_varmint');
+    const hasVarmintInCart = varmint && cart.includes(varmint.id);
+    
+    if (!hasVarmintInCart && profile.cash >= 72) {
+      recommendations.push({
+        priority: 3,
+        title: '🐦 Consider: Varmint Rifle',
+        desc: 'Required for shooting small game (birds, rabbits) for perfect pelts. Essential for Trader role later. Only $72.',
+        action: 'Buy after Bolt Action',
+        type: 'info',
+      });
+    }
+  }
+
   // ═══ ANALYSIS RULES ═══
 
   // Rule 1: Budget Overrun Detection

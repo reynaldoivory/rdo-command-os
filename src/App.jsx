@@ -17,6 +17,7 @@ import { migrateProfile } from './utils/migrations';
 import { MissionTimer } from './components/MissionTimer';
 import { OutlawAlmanac } from './components/OutlawAlmanac';
 import { EfficiencyEngine } from './components/EfficiencyEngine';
+import { ProfileManager } from './components/ProfileManager';
 
 // --- LOGIC HELPERS ---
 const getLevelFromXP = (xp, isRole = false, maxLevel = 100) => {
@@ -115,16 +116,46 @@ const FastTravelCalc = () => {
 // --- MAIN COMPONENT ---
 
 export default function App() {
-  // Default profile schema - source of truth for all fields
+  // CONFIGURATION: FRESH SPAWN - The "Zero State"
   const DEFAULT_PROFILE = {
-    rank: 47, xp: 136800, cash: 1444, gold: 9.5,
+    rank: 1, xp: 0, cash: 0, gold: 0,
     roles: { bountyHunter: 0, trader: 0, collector: 0, moonshiner: 0, naturalist: 0 }
   };
 
+  // PROFILE SLOT STATE - Multi-tenancy support
+  const [currentProfileId, setCurrentProfileId] = useState(() => 
+    localStorage.getItem('rdo_active_slot') || 'Main'
+  );
+
+  // Helper to change profile slots
+  const switchProfile = (id) => {
+    localStorage.setItem('rdo_active_slot', id);
+    setCurrentProfileId(id);
+    window.location.reload(); // Cleanest way to reset hook state
+  };
+
+  // Clone current profile to new slot
+  const cloneProfile = (newId) => {
+    const currentData = localStorage.getItem(`rdo_os_profile_${currentProfileId}`);
+    const currentCart = localStorage.getItem(`rdo_os_cart_${currentProfileId}`);
+    if (currentData) localStorage.setItem(`rdo_os_profile_${newId}`, currentData);
+    if (currentCart) localStorage.setItem(`rdo_os_cart_${newId}`, currentCart);
+    switchProfile(newId);
+  };
+
+  // DYNAMIC PERSISTENCE KEYS - Each profile has isolated storage
+  const profileKey = `profile_${currentProfileId}`;
+  const cartKey = `cart_${currentProfileId}`;
+
   // PERSISTENT STATE - Survives page refresh!
-  // Uses deep merge migration to safely add new fields in future versions
-  const [profile, setProfile] = usePersistentState('profile', DEFAULT_PROFILE, migrateProfile);
-  const [cart, setCart] = usePersistentState('cart', []);
+  const [profile, setProfile] = usePersistentState(profileKey, DEFAULT_PROFILE, migrateProfile);
+  const [cart, setCart] = usePersistentState(cartKey, []);
+
+  // RESET HANDLER - Factory reset current profile to Fresh Spawn
+  const handleReset = () => {
+    setProfile(DEFAULT_PROFILE);
+    setCart([]);
+  };
   
   // UI state (doesn't need persistence)
   const [filter, setFilter] = useState('all');
@@ -158,6 +189,14 @@ export default function App() {
             RDO COMMAND <span className="text-gray-600 font-light text-xl">OS.25</span>
           </h1>
           <p className="text-gray-500 text-sm mt-1">Workflow Optimization & Economy Simulator</p>
+          <div className="mt-3">
+            <ProfileManager 
+              currentProfileId={currentProfileId} 
+              setProfileId={switchProfile} 
+              onReset={handleReset}
+              onClone={cloneProfile}
+            />
+          </div>
         </div>
         <div className="text-right">
            <div className="text-[10px] text-gray-600 font-bold tracking-widest uppercase">Rank {level}</div>

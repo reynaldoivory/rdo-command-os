@@ -48,11 +48,11 @@ export const ROLES = {
 
 export const UI_CONFIG = {
   priorities: {
+    starter: { label: 'Fresh Spawn', emoji: '🌱', color: 'text-lime-300', bg: 'bg-lime-950/60', border: 'border-lime-700/40', order: 0 },
     essential: { label: 'Essential', emoji: '⚡', color: 'text-emerald-300', bg: 'bg-emerald-950/60', border: 'border-emerald-700/40', order: 1 },
     recommended: { label: 'Recommended', emoji: '⭐', color: 'text-sky-300', bg: 'bg-sky-950/60', border: 'border-sky-700/40', order: 2 },
     optional: { label: 'Optional', emoji: '👍', color: 'text-amber-300', bg: 'bg-amber-950/60', border: 'border-amber-700/40', order: 3 },
     luxury: { label: 'Luxury', emoji: '💎', color: 'text-fuchsia-300', bg: 'bg-fuchsia-950/60', border: 'border-fuchsia-700/40', order: 4 },
-    starter: { label: 'Starter', emoji: '🌱', color: 'text-zinc-400', bg: 'bg-zinc-900/60', border: 'border-zinc-700/40', order: 5 },
   },
   types: {
     weapon: { label: 'Weapons', icon: Crosshair },
@@ -76,8 +76,8 @@ export const CATALOG = [
   // --- WEAPONS (Essential/Meta) ---
   { id: 'w_rev_navy', type: 'weapon', category: 'Revolver', name: 'Navy Revolver', price: 275, gold: 0, rank: 1, priority: 'essential', desc: 'META. Highest damage/accuracy sidearm.' },
   { id: 'w_rep_lancaster', type: 'weapon', category: 'Repeater', name: 'Lancaster Repeater', price: 243, gold: 0, rank: 12, priority: 'essential', desc: 'META. Best accuracy and fire rate balance.' },
-  { id: 'w_rif_bolt', type: 'weapon', category: 'Rifle', name: 'Bolt Action Rifle', price: 216, gold: 0, rank: 7, priority: 'essential', desc: 'Workhorse for hunting and mid-range combat.' },
-  { id: 'w_rif_varmint', type: 'weapon', category: 'Rifle', name: 'Varmint Rifle', price: 72, gold: 0, rank: 8, priority: 'essential', desc: 'Required for small game/bird collecting.' },
+  { id: 'w_rif_bolt', type: 'weapon', category: 'Rifle', name: 'Bolt Action Rifle', price: 216, gold: 0, rank: 7, priority: 'starter', desc: 'FIRST MAJOR PURCHASE. One-shot kills for deer/combat. Buy at Rank 7.' },
+  { id: 'w_rif_varmint', type: 'weapon', category: 'Rifle', name: 'Varmint Rifle', price: 72, gold: 0, rank: 8, priority: 'starter', desc: 'SECOND PURCHASE. Required for small game (birds/rabbits). Buy after Bolt Action.' },
   { id: 'w_rif_carcano', type: 'weapon', category: 'Sniper', name: 'Carcano Rifle', price: 456, gold: 0, rank: 50, priority: 'essential', desc: 'META. King of PvP/Long-range PvE.' },
   { id: 'w_sg_pump', type: 'weapon', category: 'Shotgun', name: 'Pump-Action Shotgun', price: 266, gold: 0, rank: 5, priority: 'essential', desc: 'Most reliable close-quarters weapon.' },
   { id: 'w_bow_improved', type: 'weapon', category: 'Bow', name: 'Improved Bow', price: 275, gold: 0, rank: 1, priority: 'essential', desc: 'Long range stealth. Good vs Slippery Bastard.' },
@@ -106,6 +106,7 @@ export const CATALOG = [
   { id: 'u_nat_camp', type: 'camp', category: 'Camp', name: 'Wilderness Camp', price: 750, gold: 0, rank: 5, priority: 'essential', desc: 'Portable campfire. Combine with Fast Travel pamphlet.' },
 
   // --- HORSES & SADDLES ---
+  { id: 'h_red_arab', type: 'horse', category: 'Elite', name: 'Red Chestnut Arabian', price: 250, gold: 0, rank: 1, priority: 'starter', desc: 'Best cheap horse. Buy after Bolt Action Rifle.' },
   { id: 'h_mft', type: 'horse', category: 'Multi', name: 'Missouri Fox Trotter', price: 1125, gold: 0, rank: 58, priority: 'essential', desc: 'Best stats (Speed + Health).' },
   { id: 'h_turk', type: 'horse', category: 'Multi', name: 'Turkoman', price: 950, gold: 0, rank: 56, priority: 'recommended', desc: 'High health combat horse.' },
   { id: 'h_mus', type: 'horse', category: 'Multi', name: 'Mustang (Buckskin)', price: 500, gold: 0, rank: 1, priority: 'recommended', desc: 'Best budget horse. Max health/stamina at Lvl 4.' },
