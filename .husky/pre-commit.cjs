@@ -20,8 +20,8 @@ console.log('\n═════════════════════�
 console.log('        INFINITE HORIZON PROTOCOL - PRE-COMMIT');
 console.log('═══════════════════════════════════════════════════════\n');
 
-// Run all checks
-if (!run('npm run lint', 'Running ESLint')) {
+// Run lint-staged (only lints changed files)
+if (!run('npx lint-staged', 'Linting staged files')) {
   console.log('\n⛔ ESLint violations detected. Fix before committing.');
   process.exit(1);
 }
