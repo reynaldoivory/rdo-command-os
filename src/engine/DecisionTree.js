@@ -133,8 +133,8 @@ export function analyzeEfficiency(profile, catalog, cart) {
   // Rule 5: Role Progression Check
   const roles = profile.roles || {};
   const underleveledRoles = Object.entries(roles)
-    .filter(([_, xp]) => xp < 1000) // Less than level 5 equivalent
-    .map(([name, _]) => name);
+    .filter(([, xp]) => xp < 1000) // Less than level 5 equivalent
+    .map(([name]) => name);
   
   if (underleveledRoles.length >= 3 && cart.length > 0) {
     recommendations.push({

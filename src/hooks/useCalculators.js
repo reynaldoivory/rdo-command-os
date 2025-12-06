@@ -3,7 +3,7 @@
 // =========================================================================
 
 import { useMemo } from 'react';
-import { ROLE_PAYOUTS, HUNTING_VALUES } from '../data';
+import { ROLE_PAYOUTS, HUNTING_VALUES, COLLECTOR_SETS } from '../data';
 
 // =========================================================================
 // BOUNTY HUNTER CALCULATIONS
@@ -163,8 +163,6 @@ export function useTraderCalculator() {
  * @returns {{ sale: number, cost: number, profit: number, time: number, perHour: number }}
  */
 export function calculateMoonshineBatch(strength, hasCondenser = false, hasPolishedCopper = false, flavorRecipeCost = 0) {
-  const payouts = ROLE_PAYOUTS.moonshiner;
-  
   let baseData;
   switch (strength) {
     case 'strong':
@@ -222,8 +220,6 @@ export function useMoonshinerCalculator() {
  * @returns {{ total: number, perSet: Object, bestFirst: string[] }}
  */
 export function calculateCollectorSets(setNames) {
-  const { COLLECTOR_SETS } = require('../data');
-  
   const perSet = {};
   let total = 0;
   

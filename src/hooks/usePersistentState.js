@@ -64,7 +64,7 @@ export function usePersistentState(key, initialValue, migrationFn = null) {
     } catch (error) {
       console.error(`[RDO OS] Failed to save state for "${key}":`, error);
     }
-  }, [prefixedKey, state]);
+  }, [key, prefixedKey, state]);
 
   // 4. CROSS-TAB SYNCHRONIZATION
   useEffect(() => {
@@ -77,7 +77,7 @@ export function usePersistentState(key, initialValue, migrationFn = null) {
             const parsed = JSON.parse(item);
             setState(parsed.data);
           }
-        } catch (err) {
+        } catch {
           // Ignore parse errors
         }
       }
