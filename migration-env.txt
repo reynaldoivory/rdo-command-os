@@ -1,0 +1,4 @@
+Node.js: v24.11.1
+npm: 11.6.2
+Git: git version 2.52.0.windows.1
+Date: 2025-12-07T16:40:11.301Z
