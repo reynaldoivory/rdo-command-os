@@ -34,6 +34,37 @@ const ROLE_ICONS = {
     naturalist: Leaf,
 };
 
+// ═══════════════════════════════════════════════════════════════════════════
+// URGENCY STYLES - Maps urgency levels to visual indicators
+// Matches CommandCenter priority system for UX consistency
+// ═══════════════════════════════════════════════════════════════════════════
+const URGENCY_STYLES = {
+    critical: {
+        border: 'border-b-2 border-red-500/30',
+        borderLeft: 'border-l-4 border-red-500',
+        badge: 'bg-red-500/10 text-red-400',
+        text: 'text-red-400'
+    },
+    high: {
+        border: 'border-b-2 border-amber-500/30',
+        borderLeft: 'border-l-4 border-amber-500',
+        badge: 'bg-amber-500/10 text-amber-400',
+        text: 'text-amber-400'
+    },
+    medium: {
+        border: 'border-b-2 border-blue-500/30',
+        borderLeft: 'border-l-4 border-blue-500',
+        badge: 'bg-blue-500/10 text-blue-400',
+        text: 'text-blue-400'
+    },
+    low: {
+        border: 'border-b-2 border-emerald-500/30',
+        borderLeft: 'border-l-4 border-emerald-500',
+        badge: 'bg-emerald-500/10 text-emerald-400',
+        text: 'text-emerald-400'
+    }
+};
+
 /**
  * Analyze current game state and return prioritized actions
  */
@@ -258,6 +289,10 @@ export const MissionControl = () => {
 
     const PrimaryIcon = ACTION_TYPES[primaryAction.type]?.icon || Zap;
     const primaryConfig = ACTION_TYPES[primaryAction.type];
+    
+    // Resolve urgency styles - default to 'medium' if unknown
+    const urgency = primaryAction.urgency || 'medium';
+    const urgencyStyles = URGENCY_STYLES[urgency] || URGENCY_STYLES.medium;
 
     return (
         <div className="bg-[#121212] border border-white/10 rounded-xl overflow-hidden">
@@ -271,7 +306,7 @@ export const MissionControl = () => {
             </div>
 
             {/* Primary Action */}
-            <div className={`p-4 border-l-4 border-rdo-red hover:border-rdo-gold transition ${primaryAction.urgency === 'critical' ? 'bg-red-500/10 animate-pulse' : primaryAction.urgency === 'high' ? 'bg-amber-500/10' : ''}`}>
+            <div className={`p-4 ${urgencyStyles.borderLeft} ${urgencyStyles.border} border-b-2 border-b-rdo-gold hover:border-b-rdo-gold transition ${primaryAction.urgency === 'critical' ? 'bg-red-500/10 animate-pulse' : primaryAction.urgency === 'high' ? 'bg-amber-500/10' : ''}`}>
                 <div className="flex items-start gap-3">
                     <div className={`p-2 rounded-lg ${primaryConfig.bg}`}>
                         <PrimaryIcon size={20} className={primaryConfig.color} />
@@ -329,8 +364,11 @@ export const MissionControl = () => {
                         {secondaryActions.map((action, idx) => {
                             const config = ACTION_TYPES[action.type];
                             const Icon = config?.icon || Zap;
+                            // Resolve urgency styles for secondary actions
+                            const actionUrgency = action.urgency || 'medium';
+                            const actionUrgencyStyles = URGENCY_STYLES[actionUrgency] || URGENCY_STYLES.medium;
                             return (
-                                <div key={idx} className="px-4 py-3 border-l-4 border-rdo-red hover:border-rdo-gold transition flex items-center gap-3 hover:bg-white/5">
+                                <div key={idx} className={`px-4 py-3 ${actionUrgencyStyles.borderLeft} border-b-2 border-b-rdo-gold hover:border-b-rdo-gold transition flex items-center gap-3 hover:bg-white/5`}>
                                     <Icon size={14} className={config?.color || 'text-gray-400'} />
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2">
