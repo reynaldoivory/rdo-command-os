@@ -62,9 +62,10 @@ export const ProfileManager = ({ currentProfileId, setProfileId, onReset, onClon
     <div className="relative z-50">
       {/* Trigger Button */}
       <button
+        type="button"
         data-testid="profile-trigger"
         onClick={() => setIsExpanded(!isExpanded)}
-        className="flex items-center gap-2 bg-[#1a1a1a] border border-white/10 px-3 py-1.5 rounded-lg hover:border-[#D4AF37] transition-all"
+        className="flex items-center gap-2 bg-[#1a1a1a] border border-white/10 px-3 py-1.5 rounded-lg hover:border-[#D4AF37] transition-all cursor-pointer"
       >
         <Users size={14} className="text-[#D4AF37]" />
         <span className="text-xs font-bold font-mono uppercase text-gray-300">
