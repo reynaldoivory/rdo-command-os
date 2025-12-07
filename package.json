@@ -17,6 +17,8 @@
     "check-size": "size-limit",
     "analyze": "size-limit --why",
     "bundle": "vite-bundle-visualizer --output stats.html",
+    "validate-migration": "node scripts/validate-migration.js",
+    "pre-migration": "node scripts/pre-migration-checklist.js",
     "release": "standard-version",
     "release:minor": "standard-version --release-as minor",
     "release:major": "standard-version --release-as major"
