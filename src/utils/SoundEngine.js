@@ -43,7 +43,7 @@ class SoundEngine {
                 audio.volume = DEFAULT_VOLUME;
                 audio.preload = 'auto';
                 this.cache[key] = audio;
-            } catch (e) {
+            } catch {
                 // Audio creation failed - browser restriction
                 console.warn(`[SoundEngine] Failed to preload ${key}`);
             }

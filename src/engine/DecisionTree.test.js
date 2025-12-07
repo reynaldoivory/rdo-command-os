@@ -103,7 +103,7 @@ describe('analyzeEfficiency', () => {
   describe('Reserve Warnings', () => {
     it('warns about low cash reserve after purchase', () => {
       const profile = { ...MID_GAME_PROFILE, cash: 150 };
-      const result = analyzeEfficiency(profile, MOCK_CATALOG, ['cheap_item']);
+      analyzeEfficiency(profile, MOCK_CATALOG, ['cheap_item']);
       
       // After buying $50 item, $100 remains - exactly at threshold
       // But profile has $150, after $50 = $100, which equals CASH_RESERVE_MIN

@@ -8,13 +8,12 @@
 import React, { useMemo } from 'react';
 import {
     Zap, Target, Package, Search, Leaf, Coins, DollarSign,
-    Clock, Calendar, ChevronRight, AlertCircle, Star, TrendingUp
+    Clock, Calendar, ChevronRight, Star, TrendingUp
 } from 'lucide-react';
 import { useProfile } from '../../context/ProfileContext';
-import { useDailies, extractDailyKeywords } from '../../hooks/useDailies';
+import { useDailies } from '../../hooks/useDailies';
 import { getNextEvent, getCurrentActiveEvent } from '../../utils/schedule-logic';
 import { ROLES } from '../../data/rdo-data';
-import { getLevelFromXP } from '../../utils/rdo-logic';
 
 // Action type metadata
 const ACTION_TYPES = {
@@ -40,7 +39,6 @@ const ROLE_ICONS = {
  */
 function analyzeOptimalActions(profile, dailies, nextEvent, activeEvent) {
     const actions = [];
-    const level = getLevelFromXP(profile.xp);
 
     // ═══════════════════════════════════════════════════════════════════════
     // PRIORITY 1: Active God-Tier Event (DROP EVERYTHING)
@@ -107,7 +105,6 @@ function analyzeOptimalActions(profile, dailies, nextEvent, activeEvent) {
     // PRIORITY 4: Daily Challenges (streak maintenance)
     // ═══════════════════════════════════════════════════════════════════════
     if (dailies && !dailies.isFallback) {
-        const keywords = extractDailyKeywords(dailies);
         const easyDailies = [];
 
         // Find "easy" dailies based on keywords
@@ -140,7 +137,7 @@ function analyzeOptimalActions(profile, dailies, nextEvent, activeEvent) {
     // PRIORITY 5: Role Progression (level up underleveled roles)
     // ═══════════════════════════════════════════════════════════════════════
     const roleEntries = Object.entries(profile.roles);
-    const unlockedRoles = roleEntries.filter(([_, xp]) => xp > 0);
+    const unlockedRoles = roleEntries.filter(([, xp]) => xp > 0);
 
     if (unlockedRoles.length > 0) {
         // Find lowest level role for focus
@@ -153,7 +150,6 @@ function analyzeOptimalActions(profile, dailies, nextEvent, activeEvent) {
         }, null);
 
         if (lowestRole && lowestRole.level < 20) {
-            const RoleIcon = ROLE_ICONS[lowestRole.key] || Star;
             const roleName = ROLES[lowestRole.key]?.name || lowestRole.key;
 
             actions.push({

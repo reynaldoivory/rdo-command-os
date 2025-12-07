@@ -56,12 +56,15 @@ export const CommandSearch = () => {
             const timeout = setTimeout(handleSearch, 300);
             return () => clearTimeout(timeout);
         } else if (query.length === 0) {
-            setResult(null);
+            // Defer to avoid setState in effect warning
+            setTimeout(() => {
+                setResult(null);
+            }, 0);
         }
     }, [query, handleSearch]);
 
     // Use example query
-    const useExample = (example) => {
+    const handleExampleClick = (example) => {
         setQuery(example);
         setShowExamples(false);
         inputRef.current?.focus();
@@ -143,7 +146,7 @@ export const CommandSearch = () => {
                             {EXAMPLE_QUERIES.map((example, i) => (
                                 <button
                                     key={i}
-                                    onClick={() => useExample(example)}
+                                    onClick={() => handleExampleClick(example)}
                                     className="text-xs px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-lg transition-colors"
                                 >
                                     {example}

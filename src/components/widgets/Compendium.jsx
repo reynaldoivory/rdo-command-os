@@ -178,7 +178,6 @@ export const Compendium = () => {
     const [isExpanded, setIsExpanded] = useState(true);
     const {
         registerKill,
-        getStatus,
         allStatuses,
         getTimeUntilDailyReset,
         getTimeUntilWeeklyReset

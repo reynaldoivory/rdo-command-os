@@ -1,3 +1,4 @@
+/* eslint-env node */
 /**
  * ═══════════════════════════════════════════════════════════════════════════
  * RDO COMMAND - OCR Catalog Ingestion Engine
@@ -61,7 +62,7 @@ const PATTERNS = {
     // Gold: 3G, 3 G, 3 Gold, 3 gold
     GOLD: /(\d+)\s?(?:G|Gold|gold)/gi,
     // Filter noise: common OCR garbage
-    NOISE: /^[\d\s\.\$G]+$|^\W+$|^.{1,2}$/,
+    NOISE: /^[\d\s.$G]+$|^\W+$|^.{1,2}$/,
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -119,6 +120,7 @@ async function processImage(imagePath) {
             {
                 logger: m => {
                     if (m.status === 'recognizing text') {
+                        // eslint-disable-next-line no-undef
                         process.stdout.write(`\r   Progress: ${Math.floor(m.progress * 100)}%`);
                     }
                 }
@@ -202,7 +204,7 @@ function mergeWithExisting(newItems) {
             // Handle both array root and { items: [] } wrapper
             existing = Array.isArray(raw) ? raw : (raw.items || []);
             console.log(`\n📂 Existing wardrobe: ${existing.length} items`);
-        } catch (e) {
+        } catch {
             console.log('\n⚠️  Could not parse existing wardrobe.json, starting fresh');
         }
     }

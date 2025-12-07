@@ -31,7 +31,7 @@ const ROLE_COLORS = {
 };
 
 export const SpecialsBanner = () => {
-    const { specials, loading, error, refresh, lastFetched } = useSpecials();
+    const { specials, loading, error, refresh } = useSpecials();
     const { newItems, markAllSeen, hasNewItems } = useNewSpecials(specials);
     const [isExpanded, setIsExpanded] = useState(false);
 

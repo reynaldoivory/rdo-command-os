@@ -123,14 +123,14 @@ export function useWardrobe(profileId = 'Main') {
 
     const stats = useMemo(() => {
         const total = items.length;
-        const complete = items.filter(i => i.variantsOwned >= i.variantsTotal).length;
+        const completed = items.filter(i => i.variantsOwned >= i.variantsTotal).length;
         const totalVariants = items.reduce((sum, i) => sum + (i.variantsTotal || 0), 0);
         const ownedVariants = items.reduce((sum, i) => sum + (i.variantsOwned || 0), 0);
         const progressPercent = totalVariants > 0
             ? Math.round((ownedVariants / totalVariants) * 100)
             : 0;
 
-        return { total, complete, totalVariants, ownedVariants, progressPercent };
+        return { total, completed, totalVariants, ownedVariants, progressPercent };
     }, [items]);
 
     // ═══════════════════════════════════════════════════════════════════════════

@@ -35,7 +35,7 @@ const SIZE_COLORS = {
  * @param {Function} [props.onLocate] - Callback when user wants to mark spawn on map
  */
 export const HuntingTerminal = ({ userWeapons = [], profile = {}, onLocate }) => {
-    const { animals, loading, error, validateLoadout, getOptimalValue, canCarryCarcass } = useHuntingDB();
+    const { animals, loading, error, validateLoadout, getOptimalValue } = useHuntingDB();
     const { dailies } = useDailies();
 
     const [isExpanded, setIsExpanded] = useState(true);

@@ -181,7 +181,9 @@ export function useDailies() {
                 const today = new Date().toISOString().split('T')[0];
                 if (date === today) return ids;
             }
-        } catch { }
+        } catch {
+            // Invalid stored data, continue with empty set
+        }
         return [];
     });
 

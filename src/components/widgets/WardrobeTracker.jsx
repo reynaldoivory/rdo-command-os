@@ -207,7 +207,7 @@ export const WardrobeTracker = ({ profileId = 'Main' }) => {
                 </h3>
                 <div className="flex items-center gap-4">
                     <span className="text-xs text-gray-500 font-mono uppercase tracking-wider">
-                        {stats.complete}/{stats.total} Complete
+                        {stats.completed}/{stats.total} Complete
                     </span>
                     {isExpanded
                         ? <ChevronUp size={16} className="text-gray-500" />

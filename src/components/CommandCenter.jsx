@@ -4,13 +4,12 @@
 // Consumes analyzeProfile() output and renders as actionable directive
 // ═══════════════════════════════════════════════════════════════════════════
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useProfile } from '../context/ProfileContext';
 import {
     Truck, Target, Map, Beaker, TrendingUp, Crown, Star, Compass,
     AlertTriangle, Shield, ArrowRight, Calendar, Crosshair
 } from 'lucide-react';
-import { analyzeProfile } from '../logic/nextBestAction';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 1. ICON REGISTRY (Maps Logic Strings to React Components)
@@ -66,7 +65,7 @@ const PRIORITY_STYLES = {
 // 3. COMPONENT
 // ═══════════════════════════════════════════════════════════════════════════
 export const CommandCenter = () => {
-    const { profile, nextBestAction } = useProfile();
+    const { nextBestAction } = useProfile();
     const analysis = nextBestAction;
 
     // Loading state

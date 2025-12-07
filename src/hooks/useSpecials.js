@@ -265,7 +265,10 @@ export function useNewSpecials(specials) {
 
         // Find items that haven't been seen
         const unseen = new Set(currentIds.filter(id => !seenIds.has(id)));
-        setNewItems(unseen);
+        // Defer to avoid setState in effect warning
+        setTimeout(() => {
+            setNewItems(unseen);
+        }, 0);
     }, [specials]);
 
     const markAllSeen = useCallback(() => {

@@ -93,7 +93,7 @@ export const calcFastTravelCost = (from, to) => {
  * @param {boolean} isStranger - Is this a stranger mission (lower base)
  * @returns {{ gold: number, tier: string }}
  */
-export const calculateGoldPayout = (minutes, isStranger = false) => {
+export const calculateGoldPayout = (minutes) => {
   // Base rate: 0.08 gold per 3 minutes (0.0267 per minute)
   // Caps at 12 minutes for regular, 30 for legendary
   const baseRate = 0.08;
@@ -119,7 +119,7 @@ export const calculateGoldPayout = (minutes, isStranger = false) => {
  * @param {Object} options - Activity-specific options
  * @returns {{ goldPerHour: number, cashPerHour: number, xpPerHour: number }}
  */
-export const calculateHourlyEarnings = (activity, options = {}) => {
+export const calculateHourlyEarnings = (activity) => {
   const earnings = {
     // Bounty Hunter (waiting 12 min per bounty = 5 per hour)
     bountyHunter: { goldPerHour: 1.6, cashPerHour: 125, xpPerHour: 1500 },

@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import './index.css';
 
 // CONTEXT - Stage 2 State Management
-import { ProfileProvider, useProfile } from './context/ProfileContext';
+import { ProfileProvider } from './context/ProfileContext';
 
 // DATA & UTIL HOOKS
 import { useLayoutConfig } from './hooks/useLayoutConfig';

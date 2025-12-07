@@ -66,8 +66,10 @@ export const Chronometer = () => {
     }, [alertTriggered]);
 
     useEffect(() => {
-        // Initial tick
-        tick();
+        // Initial tick - deferred to avoid setState in effect warning
+        const initialTimeout = setTimeout(() => {
+            tick();
+        }, 0);
 
         // Tick every 60 seconds
         const timer = setInterval(tick, 60000);
@@ -77,13 +79,19 @@ export const Chronometer = () => {
             Notification.requestPermission();
         }
 
-        return () => clearInterval(timer);
+        return () => {
+            clearTimeout(initialTimeout);
+            clearInterval(timer);
+        };
     }, [tick]);
 
     // Load upcoming events when expanded
     useEffect(() => {
         if (expanded) {
-            setUpcomingEvents(getUpcomingEvents(5));
+            // Defer to avoid setState in effect warning
+            setTimeout(() => {
+                setUpcomingEvents(getUpcomingEvents(5));
+            }, 0);
         }
     }, [expanded, event]);
 

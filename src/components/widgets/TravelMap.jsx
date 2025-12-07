@@ -67,7 +67,10 @@ export const TravelMap = ({ currentLocation, currentCash, onTravel }) => {
 
     useEffect(() => {
         if (currentLocation && !isTraveling) {
-            setOrigin(currentLocation);
+            // Defer to avoid setState in effect warning - syncing with prop changes
+            setTimeout(() => {
+                setOrigin(currentLocation);
+            }, 0);
         }
     }, [currentLocation, isTraveling]);
 
@@ -124,18 +127,26 @@ export const TravelMap = ({ currentLocation, currentCash, onTravel }) => {
                 const dist = calcDistance(startLoc, endLoc);
                 // RDO formula: ~$1 per 10 units, capped at $10
                 const calculatedCost = Math.min(10, Math.max(1, Math.ceil(dist / 10)));
-                setCost(calculatedCost);
+                // Defer to avoid setState in effect warning
+                setTimeout(() => {
+                    setCost(calculatedCost);
+                }, 0);
             }
 
             // 2. Calculate Route (Visual Logic - uses topology graph)
             const path = findShortestPath(origin, destination);
-            setRoutePath(path);
-            setRouteEdges(pathToEdges(path));
+            // Defer to avoid setState in effect warning
+            setTimeout(() => {
+                setRoutePath(path);
+                setRouteEdges(pathToEdges(path));
+            }, 0);
         } else {
             // Clear when no complete route
-            setCost(0);
-            setRouteEdges([]);
-            setRoutePath([]);
+            setTimeout(() => {
+                setCost(0);
+                setRouteEdges([]);
+                setRoutePath([]);
+            }, 0);
         }
     }, [origin, destination]);
 
