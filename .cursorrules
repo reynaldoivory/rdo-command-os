@@ -1,4 +1,4 @@
-# RDO Command OS – Cursor Rules (v1)
+# RDO Command OS – Cursor Rules (v2)
 
 ## 1. Project overview
 
@@ -29,6 +29,13 @@
   - React Context providers and hooks.
   - `ProfileContext.jsx` is the main place for cross‑panel profile state.
   - Do not duplicate global state outside this folder.
+  - **MODULAR STRUCTURE REQUIRED:**
+    - Split large contexts into separate files:
+      - `[name]Hooks.js` (custom hooks like useProfile, useCart)
+      - `[name]Constants.js` (default values, enums)
+      - `[name]ContextInstance.js` (Context instance)
+      - `index.js` (central export)
+    - This prevents React Fast Refresh warnings.
 
 - `src/hooks/`
 
@@ -77,7 +84,53 @@
   - Only render primitives (strings, numbers, booleans) or simple derived values.
   - Do **not** interpolate entire objects directly into text or className.
 
-## 5. Coding style and tooling
+- **NEVER pass state down through props**:
+  - If you find yourself passing `onClick`, `onChange`, or state setters as props through 2+ layers, refactor to use Context.
+  - Example violation: `<Parent> → <Child onClick={handler}> → <Grandchild onClick={handler}>`
+  - Correct approach: Create a Context with the handler, consume it directly in Grandchild.
+
+## 5. Component size and structure
+
+- **Maximum component size: 200 lines**
+  - If a component exceeds 200 lines, extract sub-components or logic:
+    - Move business logic to `src/logic/`.
+    - Extract UI sections into smaller components.
+    - Create custom hooks in `src/hooks/` for complex state management.
+  - Exception: Complex forms or data tables may exceed this if unavoidable (document why).
+
+- **Co-located tests required:**
+  - Every component should have a test file in the same directory.
+  - Naming: `ComponentName.test.jsx` (same folder as `ComponentName.jsx`).
+  - Minimum coverage: render test + key interactions.
+
+## 6. Documentation standards
+
+- **JSDoc required for all Context providers:**
+
+  ```javascript
+  /**
+   * ProfileContext provides user profile state across the application.
+   *
+   * @example
+   * // In a component:
+   * import { useProfile } from '@/context';
+   * const { profile, updateProfile } = useProfile();
+   *
+   * @exports ProfileProvider - Wrap app root with this
+   * @exports useProfile - Hook to access profile state
+   * @exports useCart - Hook to access cart state
+   */
+  ```
+
+- **TypeScript required for new Context providers:**
+  - Use `.tsx` extension for new context files.
+  - Define interfaces for context values and provider props.
+  - Existing `.jsx` contexts can remain JavaScript until refactored.
+
+- **Comments for non-obvious logic:**
+  - If a calculation or algorithm isn't immediately clear, add a comment explaining "why" (not just "what").
+
+## 7. Coding style and tooling
 
 - Use **function components** and **React hooks**; avoid class components.
 - Follow existing ESLint and Prettier configuration:
@@ -85,7 +138,27 @@
   - Assume `formatOnSave` and `eslint --fix` are active.
 - Use descriptive, domain‑relevant names for components and hooks (e.g., `WalletPanel`, `useWardrobe`).
 
-## 6. Safety and Git discipline
+- **Error boundaries required:**
+  - Wrap all lazy-loaded components with error boundaries.
+  - Use `<Suspense fallback={<Loading />}>` for React.lazy imports.
+
+## 8. Performance best practices
+
+- **Memoization:**
+  - Wrap callback functions in `useCallback` when passed to child components.
+  - Use `useMemo` for expensive calculations that depend on specific dependencies.
+  - Avoid unnecessary re-renders by memoizing context values.
+
+- **Code splitting:**
+  - Use `React.lazy` for large widgets that aren't needed on initial load.
+  - Ensure all lazy components have `export default` (React.lazy requirement).
+
+- **Bundle size awareness:**
+  - Check bundle impact of new dependencies before adding them.
+  - Current limit: 110kB (configured in `package.json`).
+  - Run `npm run build` to verify size after major changes.
+
+## 9. Safety and Git discipline
 
 - For multi‑file refactors:
   - Prefer modifying only the files you name explicitly in the prompt.
@@ -93,3 +166,40 @@
 - Never remove or rename files in `src/data`, `src/logic`, or `src/engine` unless the prompt explicitly confirms this is intended.
 - Assume Git is used:
   - Make changes in a way that can be easily reviewed and reverted (small, coherent diffs).
+
+- **Pre-commit checklist:**
+  - Run `npm run lint` (must pass).
+  - Run `npm test` (if tests exist).
+  - Run `npm run build` (must succeed).
+  - Verify no console errors in browser.
+
+## 10. Anti-patterns to avoid
+
+- ❌ **Prop drilling callbacks through 2+ layers** → Use Context instead.
+- ❌ **Mixing business logic in UI components** → Extract to `src/logic/`.
+- ❌ **Duplicating state across contexts** → Single source of truth only.
+- ❌ **Large monolithic components (>200 lines)** → Break into smaller pieces.
+- ❌ **Missing default exports on lazy components** → React.lazy will crash.
+- ❌ **Interpolating objects in JSX** → Use primitive properties only.
+- ❌ **Disabling ESLint rules** → Fix the underlying issue instead.
+
+## 11. Testing requirements
+
+- **Unit tests for:**
+  - Context providers (state updates, hook behavior).
+  - Custom hooks (data transformations, side effects).
+  - Complex logic functions in `src/logic/`.
+
+- **Integration tests for:**
+  - User workflows (add to cart, edit profile, etc.).
+  - Context + component interactions.
+
+- **Use React Testing Library:**
+  - Test user behavior, not implementation details.
+  - Query by accessible roles/labels, not class names.
+
+---
+
+**Version History:**
+- **v2 (Dec 7, 2025):** Added component size limits, JSDoc requirements, TypeScript standards, co-located tests, anti-patterns, performance guidelines.
+- **v1 (Dec 7, 2025):** Initial Context-First architecture rules.
