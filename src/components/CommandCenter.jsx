@@ -33,7 +33,6 @@ const ICON_MAP = {
 const PRIORITY_STYLES = {
     critical: {
         border: 'border-red-500',
-        borderLeft: 'border-l-4 border-l-red-500',
         bg: 'from-red-950/40 to-black',
         badge: 'bg-red-500/20 text-red-400 border-red-500/50',
         iconParams: { color: 'text-red-500', animate: 'animate-bounce' },
@@ -41,7 +40,6 @@ const PRIORITY_STYLES = {
     },
     high: {
         border: 'border-amber-500',
-        borderLeft: 'border-l-4 border-l-amber-500',
         bg: 'from-amber-950/40 to-black',
         badge: 'bg-amber-500/20 text-amber-400 border-amber-500/50',
         iconParams: { color: 'text-amber-500', animate: 'animate-pulse' },
@@ -49,7 +47,6 @@ const PRIORITY_STYLES = {
     },
     medium: {
         border: 'border-blue-500',
-        borderLeft: 'border-l-4 border-l-blue-500',
         bg: 'from-blue-950/40 to-black',
         badge: 'bg-blue-500/20 text-blue-400 border-blue-500/50',
         iconParams: { color: 'text-blue-400', animate: '' },
@@ -57,7 +54,6 @@ const PRIORITY_STYLES = {
     },
     low: {
         border: 'border-gray-700',
-        borderLeft: 'border-l-4 border-l-gray-700',
         bg: 'from-gray-900/40 to-black',
         badge: 'bg-gray-800 text-gray-400 border-gray-700',
         iconParams: { color: 'text-gray-500', animate: '' },
