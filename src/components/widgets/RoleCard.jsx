@@ -38,9 +38,9 @@ export const RoleCard = React.memo(({ roleKey, role, xp, onXPChange }) => {
           min={1}
           max={role.maxLevel}
           value={level}
-          onChange={(e) => handleLevelChange(parseInt(e.target.value) || 1)}
-          className={`text-2xl font-black font-mono ${role.color} bg-transparent w-12 text-right focus:outline-none focus:ring-1 focus:ring-${role.color.split('-')[1]}-500 rounded`}
-          title={`Set ${role.name} level directly`}
+          onChange={(e) => handleLevelChange(Number.parseInt(e.target.value, 10) || 1)}
+          className={`text-2xl font-black font-mono ${role.color} bg-black/20 hover:bg-black/40 border border-transparent hover:border-white/20 rounded px-2 w-16 text-right focus:outline-none focus:ring-2 focus:ring-${role.color.split('-')[1]}-500 transition-all cursor-pointer`}
+          title={`Click to edit ${role.name} level (1-${role.maxLevel})`}
         />
       </div>
 
@@ -71,7 +71,7 @@ export const RoleCard = React.memo(({ roleKey, role, xp, onXPChange }) => {
               min={1}
               max={role.maxLevel}
               value={level}
-              onChange={(e) => handleLevelChange(parseInt(e.target.value))}
+              onChange={(e) => handleLevelChange(Number.parseInt(e.target.value, 10))}
               className={`flex-1 h-2 bg-black/50 rounded-lg appearance-none cursor-pointer accent-current ${role.color}`}
             />
             <span className={`font-mono font-bold ${role.color} w-8 text-right`}>{level}</span>
@@ -80,8 +80,10 @@ export const RoleCard = React.memo(({ roleKey, role, xp, onXPChange }) => {
           <input
             type="number"
             value={xp}
-            onChange={(e) => onXPChange(roleKey, parseInt(e.target.value) || 0)}
-            className={`w-full bg-transparent font-mono font-bold ${role.color} focus:outline-none`}
+            onChange={(e) => onXPChange(roleKey, Number.parseInt(e.target.value, 10) || 0)}
+            className={`w-full bg-black/30 hover:bg-black/50 border border-white/10 hover:border-white/30 rounded px-2 py-1 font-mono font-bold ${role.color} focus:outline-none focus:ring-2 focus:ring-${role.color.split('-')[1]}-500 transition-all`}
+            placeholder="Enter XP value"
+            title="Enter exact XP value for this role"
           />
         )}
       </div>
