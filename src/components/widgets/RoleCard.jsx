@@ -7,7 +7,6 @@ export const RoleCard = React.memo(({ roleKey, role, xp, onXPChange }) => {
   const Icon = role.icon;
   const level = getLevelFromXP(xp, true, role.maxLevel);
   const progress = getXPProgress(xp, true, role.maxLevel);
-  const isMaxed = level >= role.maxLevel;
   const [editMode, setEditMode] = useState('level'); // 'level' or 'xp'
 
   // Handle level input - converts level to equivalent XP
@@ -20,15 +19,18 @@ export const RoleCard = React.memo(({ roleKey, role, xp, onXPChange }) => {
   return (
     <div
       data-testid={`role-card-${roleKey}`}
-      className={`relative bg-gradient-to-br from-[#0a0a0a] to-[#111] rounded-xl p-4 border ${isMaxed ? 'border-' + role.color.split('-')[1] + '-500/50' : 'border-white/10'} hover:border-white/30 transition-all group`}
+      className={`relative bg-gradient-to-br from-[#0a0a0a] to-[#111] rounded-xl p-4 border border-rdo-gold shadow-rdo hover:border-rdo-gold transition-all group`}
     >
+      {/* Decorative corner accent */}
+      <div className="absolute top-0 right-0 w-8 h-8 bg-gradient-to-br from-rdo-gold/20 to-transparent rounded-bl-full" />
+      
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className={`p-2 rounded-lg ${role.bg} shadow-lg shadow-black/50`}>
             <Icon className="text-white" size={16} />
           </div>
           <div>
-            <div className="text-sm font-bold text-gray-200">{role.name}</div>
+            <div className="text-sm font-western text-rdo-gold font-bold">{role.name}</div>
             <div className="text-[10px] text-gray-500 uppercase">{role.desc}</div>
           </div>
         </div>
@@ -90,7 +92,7 @@ export const RoleCard = React.memo(({ roleKey, role, xp, onXPChange }) => {
 
       <div className="h-2 bg-black/50 rounded-full overflow-hidden">
         <div
-          className={`h-full ${role.bg} transition-all duration-500`}
+          className="h-full bg-gradient-to-r from-rdo-gold to-rdo-rust transition-all duration-500"
           style={{ width: `${progress.percent}%` }}
         />
       </div>

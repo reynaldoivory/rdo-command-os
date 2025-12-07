@@ -14,7 +14,7 @@ const Dashboard = ({ layoutConfig }) => {
   const activePanels = layoutConfig?.panels || Object.keys(PanelsRegistry);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-rdo-dark">
       {activePanels.map((panelId) => {
         const Component = PanelsRegistry[panelId];
         if (!Component) return null;

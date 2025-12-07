@@ -3,15 +3,15 @@ import { useProfile } from '../../context';
 import { getXPFromLevel } from '../../utils/rdo-logic';
 import { User, DollarSign, Coins, Star, Edit2, Check, X, Award } from 'lucide-react';
 
-const InputRow = ({ icon, label, color, value, onChange, type, disabled }) => (
+const InputRow = ({ icon, label, value, onChange, type, disabled }) => (
     <div className="bg-black/30 p-3 rounded-lg border border-white/5 flex justify-between items-center">
-        <div className={`flex items-center gap-2 ${color}`}>{icon} {label}</div>
+        <div className="flex items-center gap-2 text-rdo-tan">{icon} {label}</div>
         <input
             type={type} 
             value={value} 
             onChange={onChange}
             disabled={disabled}
-            className={`bg-transparent text-right font-mono font-bold text-xl w-32 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 rounded px-2 ${color} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`bg-transparent text-right font-mono font-bold text-xl w-32 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 rounded px-2 text-rdo-paper ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         />
     </div>
 );
@@ -54,10 +54,10 @@ export const WalletWidget = () => {
     };
 
     return (
-        <div className="bg-[#121212] border border-white/10 rounded-xl p-6">
+        <div className="bg-[#121212] border-2 border-rdo-gold shadow-rdo-gold rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
-                <h2 className="text-white font-bold flex items-center gap-2">
-                    <User size={18} className="text-[#D4AF37]" /> Wallet State
+                <h2 className="font-western text-rdo-gold flex items-center gap-2">
+                    <User size={18} className="text-rdo-gold" /> Wallet State
                 </h2>
                 {!isEditing ? (
                     <button
@@ -90,7 +90,6 @@ export const WalletWidget = () => {
                 <InputRow
                     icon={<Star size={16} />} 
                     label="Rank" 
-                    color="text-[#D4AF37]"
                     value={isEditing ? editValues.rank : level} 
                     type="number"
                     disabled={!isEditing}
@@ -99,7 +98,6 @@ export const WalletWidget = () => {
                 <InputRow
                     icon={<Award size={16} />} 
                     label="Tokens" 
-                    color="text-blue-400"
                     value={isEditing ? editValues.tokens : (profile.tokens ?? 0)} 
                     type="number"
                     disabled={!isEditing}
@@ -108,7 +106,6 @@ export const WalletWidget = () => {
                 <InputRow
                     icon={<Coins size={16} />} 
                     label="Gold" 
-                    color="text-yellow-400"
                     value={isEditing ? editValues.gold : profile.gold} 
                     type="number"
                     disabled={!isEditing}
@@ -117,7 +114,6 @@ export const WalletWidget = () => {
                 <InputRow
                     icon={<DollarSign size={16} />} 
                     label="Cash" 
-                    color="text-white"
                     value={isEditing ? editValues.cash : profile.cash} 
                     type="number"
                     disabled={!isEditing}

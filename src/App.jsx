@@ -48,7 +48,7 @@ const Dashboard = () => {
     <>
       <header className="max-w-7xl mx-auto mb-8 border-b border-[#D4AF37]/20 pb-6 flex justify-between items-end">
         <div>
-          <h1 className="text-4xl font-black text-white tracking-tighter">
+          <h1 className="text-4xl font-black text-rdo-paper tracking-tighter">
             RDO COMMAND <span className="text-gray-600 font-light text-xl">OS.25</span>
           </h1>
           <p className="text-gray-500 text-sm mt-1">Workflow Optimization & Economy Simulator</p>
@@ -100,7 +100,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-gray-200 font-sans p-4 lg:p-8">
+    <div className="min-h-screen bg-rdo-dark text-rdo-paper font-body p-4 lg:p-8">
       <div className="fixed top-4 right-4 z-50">
         <ProfileManager currentProfileId={currentProfileId} setProfileId={handleSwitchProfile} onClone={handleCloneProfile} onReset={handleResetProfile} />
       </div>

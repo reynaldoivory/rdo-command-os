@@ -7,6 +7,7 @@ Context-First React app. No prop drilling. State managed via ProfileContext.
 ## Folder Structure
 
 - `src/context/` - Global state (ProfileContext split into hooks/constants/provider)
+
   - `ProfileContext.jsx` - Main provider component
   - `profileHooks.js` - React hooks (useProfile, useCart, useWallet)
   - `profileConstants.js` - Default profile and constants
@@ -35,4 +36,3 @@ Context-First React app. No prop drilling. State managed via ProfileContext.
 - **Registry Pattern**: `PanelsRegistry.jsx` maps section IDs to components
 - **Persistent State**: `usePersistentState` hook handles localStorage with versioning
 - **Edit Modes**: Wallet and Roles have explicit edit modes with Save/Cancel
-

@@ -85,3 +85,34 @@ Fix the runtime error: "Cannot convert object to primitive value" while respecti
 
 First, show me the locations you found and a proposed diff.
 Do not apply the diff until I confirm.
+
+## STYLE CHANGES AIOPS-0009
+
+@Codebase
+@.cursorrules
+
+DESIGN OVERHAUL: The app currently looks like a generic dark dashboard. It needs to match the "Red Dead Redemption 2" catalog aesthetic.
+
+ACTION:
+
+1. Update `tailwind.config.js`:
+
+   - Add RDO specific colors:
+     - 'rdo-red': '#cc0000' (The classic dead eye red)
+     - 'rdo-black': '#1a1a1a' (Deep charcoal)
+     - 'rdo-paper': '#e8e4dc' (The catalog paper color)
+     - 'rdo-gold': '#cda85f' (The UI gold)
+   - Add fonts: 'Rye' (Header) and 'Roboto Condensed' (Body).
+
+2. Create `src/index.css`:
+
+   - Add `@import url('https://fonts.googleapis.com/css2?family=Rye&family=Roboto+Condensed:wght@300;400;700&display=swap');`
+   - Apply a subtle "paper texture" background or a deep textured charcoal background to `body`.
+
+3. Style Refactor (Dashboard.jsx & Widgets):
+   - Update the Dashboard grid container to use the new font family.
+   - Update widget borders to be double-borders (`border-double border-4 border-rdo-black/20` or similar).
+   - Change primary buttons to use 'rdo-red' background with white text (Dead Eye style).
+   - Change secondary accents to 'rdo-gold'.
+
+GOAL: Make it look like the in-game handheld catalog.

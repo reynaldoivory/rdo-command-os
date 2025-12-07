@@ -71,7 +71,7 @@ export const CommandCenter = () => {
     // Loading state
     if (!analysis) {
         return (
-            <div className="h-32 bg-[#0a0a0a] animate-pulse rounded-xl mb-6 border border-white/5" />
+            <div className="h-32 bg-rdo-leather animate-pulse rounded-xl mb-6 border border-white/5" />
         );
     }
 
@@ -85,7 +85,7 @@ export const CommandCenter = () => {
 
     return (
         <div
-            className={`relative overflow-hidden rounded-xl border-l-4 ${styles.border} bg-gradient-to-r ${styles.bg} shadow-2xl mb-6 group transition-all duration-500`}
+            className={`relative overflow-hidden rounded-xl border-l-4 border-b-2 border-rdo-gold ${styles.border} bg-gradient-to-r ${styles.bg} shadow-2xl mb-6 group transition-all duration-500`}
             data-testid="command-center"
         >
             {/* Background Texture */}
@@ -103,14 +103,14 @@ export const CommandCenter = () => {
                     {/* Metadata Row */}
                     <div className="flex items-center gap-2 mb-3 flex-wrap">
                         <span
-                            className={`text-[10px] uppercase tracking-widest font-black ${phase.color} border border-white/10 px-2 py-0.5 rounded bg-black/40`}
+                            className={`text-[10px] uppercase tracking-widest font-black ${phase.color} border border-white/10 px-2 py-0.5 rounded bg-rdo-leather`}
                         >
                             {phase.name}
                         </span>
                         {constraints.map(c => (
                             <span
                                 key={c}
-                                className="text-[9px] bg-black/60 text-gray-300 border border-white/10 px-2 py-0.5 rounded flex items-center gap-1 font-mono"
+                                className="text-[9px] bg-rdo-leather text-gray-300 border border-white/10 px-2 py-0.5 rounded flex items-center gap-1 font-mono"
                             >
                                 <Shield size={10} className="text-red-400" /> {c}
                             </span>
@@ -120,23 +120,23 @@ export const CommandCenter = () => {
                     {/* Headline Action */}
                     <div className="flex items-start gap-4">
                         <div
-                            className={`mt-1 p-3 rounded-xl bg-black/40 border border-white/5 shadow-inner ${styles.iconParams.color} ${styles.iconParams.animate}`}
+                            className={`mt-1 p-3 rounded-xl bg-rdo-leather border border-white/5 shadow-inner ${styles.iconParams.color} ${styles.iconParams.animate}`}
                         >
                             <IconComponent size={24} />
                         </div>
                         <div>
-                            <h2 className="text-xl md:text-2xl font-bold text-white leading-tight drop-shadow-md tracking-tight">
+                            <h2 className="text-xl md:text-2xl font-western text-rdo-gold tracking-wide uppercase leading-tight drop-shadow-md">
                                 {primaryAction.text}
                             </h2>
                             {/* Subtext - tactical guidance */}
                             {primaryAction.subtext && (
-                                <p className="text-sm text-gray-400 mt-1 font-mono">
+                                <p className="text-sm text-rdo-tan mt-1 font-mono">
                                     {primaryAction.subtext}
                                 </p>
                             )}
                             {/* Secondary Guidance */}
                             {secondaryAction && (
-                                <div className="mt-2 flex items-center gap-2 text-xs text-gray-400 border-l-2 border-white/10 pl-3">
+                                <div className="mt-2 flex items-center gap-2 text-xs text-rdo-tan border-l-2 border-white/10 pl-3">
                                     <ArrowRight size={12} />
                                     <span>{secondaryAction.text}</span>
                                 </div>
@@ -158,7 +158,7 @@ export const CommandCenter = () => {
                             <div className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-500 font-mono">
                                 {primaryAction.impact}
                             </div>
-                            <div className="text-[9px] text-gray-500 font-mono uppercase tracking-widest mt-1">
+                            <div className="text-[9px] text-rdo-tan font-mono uppercase tracking-widest mt-1">
                                 Projected Yield
                             </div>
                         </>

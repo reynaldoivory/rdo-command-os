@@ -271,7 +271,7 @@ export const MissionControl = () => {
             </div>
 
             {/* Primary Action */}
-            <div className={`p-4 ${primaryAction.urgency === 'critical' ? 'bg-red-500/10 animate-pulse' : primaryAction.urgency === 'high' ? 'bg-amber-500/10' : ''}`}>
+            <div className={`p-4 border-l-4 border-rdo-red hover:border-rdo-gold transition ${primaryAction.urgency === 'critical' ? 'bg-red-500/10 animate-pulse' : primaryAction.urgency === 'high' ? 'bg-amber-500/10' : ''}`}>
                 <div className="flex items-start gap-3">
                     <div className={`p-2 rounded-lg ${primaryConfig.bg}`}>
                         <PrimaryIcon size={20} className={primaryConfig.color} />
@@ -291,8 +291,13 @@ export const MissionControl = () => {
                                     URGENT
                                 </span>
                             )}
+                            {(primaryAction.urgency === 'medium' || primaryAction.urgency === 'low') && (
+                                <span className="text-[9px] bg-rdo-gold text-black px-1.5 py-0.5 rounded font-bold">
+                                    PRIORITY
+                                </span>
+                            )}
                         </div>
-                        <h4 className="text-white font-bold text-lg leading-tight">{primaryAction.title}</h4>
+                        <h4 className="font-western text-rdo-paper font-bold text-lg leading-tight">{primaryAction.title}</h4>
                         <p className="text-gray-400 text-sm mt-1">{primaryAction.description}</p>
 
                         <div className="flex items-center gap-4 mt-3">
@@ -325,10 +330,17 @@ export const MissionControl = () => {
                             const config = ACTION_TYPES[action.type];
                             const Icon = config?.icon || Zap;
                             return (
-                                <div key={idx} className="px-4 py-3 flex items-center gap-3 hover:bg-white/5 transition-colors">
+                                <div key={idx} className="px-4 py-3 border-l-4 border-rdo-red hover:border-rdo-gold transition flex items-center gap-3 hover:bg-white/5">
                                     <Icon size={14} className={config?.color || 'text-gray-400'} />
                                     <div className="flex-1 min-w-0">
-                                        <div className="text-sm text-white truncate">{action.title}</div>
+                                        <div className="flex items-center gap-2">
+                                            <div className="text-sm font-western text-rdo-paper truncate">{action.title}</div>
+                                            {(action.urgency === 'medium' || action.urgency === 'low') && (
+                                                <span className="text-[9px] bg-rdo-gold text-black px-1.5 py-0.5 rounded font-bold flex-shrink-0">
+                                                    PRIORITY
+                                                </span>
+                                            )}
+                                        </div>
                                         <div className="text-xs text-gray-500 truncate">{action.description}</div>
                                     </div>
                                     <span className="text-xs text-gray-500 font-mono">{action.reward}</span>
