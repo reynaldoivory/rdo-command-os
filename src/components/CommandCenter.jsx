@@ -85,7 +85,7 @@ export const CommandCenter = () => {
 
     return (
         <div
-            className={`relative overflow-hidden rounded-xl border-l-4 border-b-2 border-rdo-gold ${styles.border} bg-gradient-to-r ${styles.bg} shadow-2xl mb-6 group transition-all duration-500`}
+            className={`relative overflow-hidden rounded-xl ${styles.borderLeft} border-b-2 border-b-rdo-gold bg-gradient-to-r ${styles.bg} shadow-2xl mb-6 group transition-all duration-500`}
             data-testid="command-center"
         >
             {/* Background Texture */}
