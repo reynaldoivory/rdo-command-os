@@ -1,0 +1,95 @@
+# RDO Command OS – Cursor Rules (v1)
+
+## 1. Project overview
+
+- This is a React application using **function components** and **hooks**.
+- Architecture is **Context-First**:
+  - Shared state should come from React Context and custom hooks.
+  - Avoid prop drilling data through multiple layers when a context or hook exists.
+
+## 2. Folder responsibilities
+
+- `src/App.jsx`, `src/main.jsx`
+
+  - App entry and top-level wiring only.
+  - Do not put business logic here.
+
+- `src/components/`
+
+  - React UI components.
+  - Subfolders:
+    - `layout/` – Layout/container components (dashboards, columns, shells).
+    - `widgets/` – Small, reusable panels/widgets (e.g., WalletWidget, CatalogGrid).
+    - `features/` – Feature-level components that compose multiple widgets.
+    - `common/` – Shared primitives (buttons, cards, layout primitives).
+  - New panels/widgets should go in `widgets/` unless they are clearly layout or shared primitives.
+
+- `src/context/`
+
+  - React Context providers and hooks.
+  - `ProfileContext.jsx` is the main place for cross‑panel profile state.
+  - Do not duplicate global state outside this folder.
+
+- `src/hooks/`
+
+  - Reusable hooks that encapsulate data access or logic (e.g., `useYieldProfile`, `useLayoutConfig`).
+  - Components should prefer using hooks from here instead of re‑implementing logic.
+
+- `src/data/`
+
+  - Static or configuration data (catalogs, schemas, topology, etc.).
+  - No React components here.
+
+- `src/logic/` and `src/engine/`
+
+  - Business rules, decision logic, and algorithms (e.g., `nextBestAction`, `DecisionTree`).
+  - Keep heavy logic in these modules, not in React components.
+  - Components and hooks should import logic from here rather than duplicating it.
+
+- `src/utils/`
+  - Generic utilities (geo, graph, schedule, etc.) that are UI‑agnostic.
+
+## 3. Panels and registry pattern
+
+- `src/components/PanelsRegistry.jsx`
+
+  - Acts as the registry for available panels/widgets.
+  - Each panel entry should:
+    - Import its widget component from `src/components/widgets` (or appropriate folder).
+    - Expose metadata (id, title, description, layout hints) if the registry supports it.
+  - When adding a new panel:
+    - Create the component in `widgets/` (or a feature folder).
+    - Register it in `PanelsRegistry.jsx`.
+    - Do not hard‑code panel selection directly in `App.jsx`.
+
+- If there is a dashboard/container component (e.g., `Dashboard.jsx` under `layout/`):
+  - It should consume the registry and context/hooks, not contain business logic.
+  - It should orchestrate which panels render, not compute domain logic.
+
+## 4. Context‑First guidelines
+
+- Prefer **Context + hooks** over prop drilling:
+
+  - If multiple widgets need the same data (profile, progression, timers), expose it via `ProfileContext` or a dedicated hook in `src/hooks/`.
+  - Components should call hooks like `useProfile()` (or similar) instead of receiving large data objects as props.
+
+- When using context values in JSX:
+  - Only render primitives (strings, numbers, booleans) or simple derived values.
+  - Do **not** interpolate entire objects directly into text or className.
+
+## 5. Coding style and tooling
+
+- Use **function components** and **React hooks**; avoid class components.
+- Follow existing ESLint and Prettier configuration:
+  - Do not disable lint rules globally.
+  - Assume `formatOnSave` and `eslint --fix` are active.
+- Use descriptive, domain‑relevant names for components and hooks (e.g., `WalletPanel`, `useWardrobe`).
+
+## 6. Safety and Git discipline
+
+- For multi‑file refactors:
+  - Prefer modifying only the files you name explicitly in the prompt.
+  - Keep related changes in small, reviewable sets.
+- Never remove or rename files in `src/data`, `src/logic`, or `src/engine` unless the prompt explicitly confirms this is intended.
+- Assume Git is used:
+  - Make changes in a way that can be easily reviewed and reverted (small, coherent diffs).

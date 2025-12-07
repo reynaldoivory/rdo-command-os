@@ -1,0 +1,97 @@
+{
+    "meta": {
+        "version": 1,
+        "lastUpdated": "2025-12-03T12:00:00Z",
+        "validUntil": "2025-12-10T12:00:00Z",
+        "source": "Rockstar Newswire"
+    },
+    "weeklyTheme": {
+        "title": "Trader's Bounty Week",
+        "description": "Hunters and traders prosper across the frontier",
+        "icon": "package"
+    },
+    "bonuses": [
+        {
+            "id": "bonus_trader_3x",
+            "type": "role",
+            "role": "trader",
+            "multiplier": 3,
+            "currency": "cash",
+            "label": "3X RDO$ on Trader Sales",
+            "description": "All Trader delivery missions pay triple cash this week"
+        },
+        {
+            "id": "bonus_bh_2x_gold",
+            "type": "role",
+            "role": "bountyHunter",
+            "multiplier": 2,
+            "currency": "gold",
+            "label": "2X Gold on Legendary Bounties",
+            "description": "Legendary bounty missions pay double gold"
+        },
+        {
+            "id": "bonus_cta_3x",
+            "type": "mission",
+            "mission": "call_to_arms",
+            "multiplier": 3,
+            "currency": "both",
+            "label": "3X Rewards on Call to Arms",
+            "description": "Survive the waves for massive payouts"
+        }
+    ],
+    "discounts": [
+        {
+            "id": "disc_hunting_wagon",
+            "itemId": "u_trd_hunt",
+            "name": "Hunting Wagon",
+            "originalPrice": 875,
+            "salePrice": 612,
+            "percentOff": 30,
+            "currency": "cash"
+        },
+        {
+            "id": "disc_bolt_action",
+            "itemId": "w_rif_bolt",
+            "name": "Bolt Action Rifle",
+            "originalPrice": 216,
+            "salePrice": 151,
+            "percentOff": 30,
+            "currency": "cash"
+        },
+        {
+            "id": "disc_naco_saddle",
+            "itemId": "s_naco",
+            "name": "Nacogdoches Saddle",
+            "originalPrice": 512,
+            "salePrice": 358,
+            "percentOff": 30,
+            "currency": "cash"
+        }
+    ],
+    "freeItems": [
+        {
+            "id": "free_ammo_box",
+            "name": "Free Ammo Parcel",
+            "description": "Claim at any Post Office",
+            "claimMethod": "benefits"
+        }
+    ],
+    "limitedTime": [
+        {
+            "id": "ltd_winter_coat",
+            "name": "Rutledge Vest (Winter Edition)",
+            "price": 8,
+            "currency": "gold",
+            "expiresAt": "2025-12-10T12:00:00Z",
+            "description": "Limited winter variant - won't return until next year"
+        }
+    ],
+    "podiumVehicle": null,
+    "primeGaming": {
+        "active": true,
+        "rewards": [
+            "Free Bounty Hunter License",
+            "5 Gold Bars"
+        ]
+    }
+}

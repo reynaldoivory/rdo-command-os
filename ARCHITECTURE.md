@@ -1,3 +1,19 @@
+# RDO COMMAND OS - ARCHITECTURE
+
+## 1. Core Pattern
+**Container (App) → Provider (ProfileContext) → Orchestrator (Dashboard) → Smart Widgets**
+
+## 2. Responsibilities
+* **App.jsx**: Lifecycle management, Profile Slot switching, Key-based Remounting.
+* **ProfileContext**: The "Database". Holds User, Cart, Catalog, and UI Config.
+* **Dashboard.jsx**: The "Traffic Controller". Maps layout IDs to Components via Registry. Passes NO data.
+* **PanelsRegistry**: Maps string IDs (e.g., 'wallet') to Component Classes.
+* **Widgets**: Self-contained UI units. Connect directly to `useProfile()`.
+
+## 3. Logic Layer (Dev 1)
+* **src/logic/**: Pure JS/TS engines (Rules, Math, Reducers).
+* **src/hooks/useNextBestAction**: The bridge between Logic and React State.
+
 # RDO Simulator v3.0 - Integration & Architecture Guide
 
 ## Executive Summary

@@ -1,0 +1,127 @@
+{
+    "schemaVersion": "1.0.0",
+    "generatedAt": "2025-12-06T00:00:00.000Z",
+    "items": [
+        {
+            "id": "W_STALKER_HAT",
+            "name": "Stalker Hat",
+            "category": "clothing",
+            "subCategory": "hat",
+            "unitCost": {
+                "cash": 14.50,
+                "gold": 0
+            },
+            "variantsTotal": 10,
+            "variantsOwned": 0,
+            "tags": [
+                "sample"
+            ]
+        },
+        {
+            "id": "W_MORNING_TAIL_COAT",
+            "name": "Morning Tail Coat",
+            "category": "clothing",
+            "subCategory": "coat",
+            "unitCost": {
+                "cash": 137.50,
+                "gold": 0
+            },
+            "variantsTotal": 8,
+            "variantsOwned": 0,
+            "tags": [
+                "sample"
+            ]
+        },
+        {
+            "id": "W_CONCHO_PANTS",
+            "name": "Concho Pants",
+            "category": "clothing",
+            "subCategory": "pants",
+            "unitCost": {
+                "cash": 42.00,
+                "gold": 0
+            },
+            "variantsTotal": 6,
+            "variantsOwned": 0,
+            "tags": [
+                "sample"
+            ]
+        },
+        {
+            "id": "W_CAVALRY_BOOTS",
+            "name": "Cavalry Boots",
+            "category": "clothing",
+            "subCategory": "boots",
+            "unitCost": {
+                "cash": 27.50,
+                "gold": 0
+            },
+            "variantsTotal": 5,
+            "variantsOwned": 0,
+            "tags": [
+                "sample"
+            ]
+        },
+        {
+            "id": "W_RIFLEMAN_GLOVES",
+            "name": "Rifleman Gloves",
+            "category": "clothing",
+            "subCategory": "gloves",
+            "unitCost": {
+                "cash": 18.75,
+                "gold": 0
+            },
+            "variantsTotal": 4,
+            "variantsOwned": 0,
+            "tags": [
+                "sample"
+            ]
+        },
+        {
+            "id": "W_GATHERED_BANDANA",
+            "name": "Gathered Bandana",
+            "category": "clothing",
+            "subCategory": "bandana",
+            "unitCost": {
+                "cash": 22.00,
+                "gold": 0
+            },
+            "variantsTotal": 12,
+            "variantsOwned": 0,
+            "tags": [
+                "sample"
+            ]
+        },
+        {
+            "id": "W_STUDDED_BANDIT_BELT",
+            "name": "Studded Bandit Belt",
+            "category": "clothing",
+            "subCategory": "belt",
+            "unitCost": {
+                "cash": 35.50,
+                "gold": 0
+            },
+            "variantsTotal": 3,
+            "variantsOwned": 0,
+            "tags": [
+                "sample"
+            ]
+        },
+        {
+            "id": "W_CORDELL_HAT",
+            "name": "Cordell Hat (Limited)",
+            "category": "clothing",
+            "subCategory": "hat",
+            "unitCost": {
+                "cash": 0,
+                "gold": 6
+            },
+            "variantsTotal": 1,
+            "variantsOwned": 0,
+            "tags": [
+                "sample",
+                "limited_time"
+            ]
+        }
+    ]
+}

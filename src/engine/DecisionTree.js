@@ -26,9 +26,10 @@ const THRESHOLDS = {
  * @param {Object} profile - Player profile { cash, gold, rank, xp, roles }
  * @param {Array} catalog - Full item catalog
  * @param {Array} cart - Array of item IDs in cart
+ * @param {Object} specials - Optional weekly specials data from remote feed
  * @returns {Object} Analysis results with metrics and recommendations
  */
-export function analyzeEfficiency(profile, catalog, cart) {
+export function analyzeEfficiency(profile, catalog, cart, specials = null) {
   const recommendations = [];
   const metrics = {
     bottleneck: 'NONE',
@@ -39,7 +40,7 @@ export function analyzeEfficiency(profile, catalog, cart) {
 
   // Get cart items
   const cartItems = cart.map(id => catalog.find(i => i.id === id)).filter(Boolean);
-  
+
   // Calculate totals
   const cartTotals = cartItems.reduce((acc, item) => ({
     cash: acc.cash + (item.price || 0),
@@ -52,7 +53,7 @@ export function analyzeEfficiency(profile, catalog, cart) {
 
   // ═══ PHASE 0: FRESH SPAWN DETECTION (The First 15 Gold) ═══
   // This is the hardest part of the game. Wrong spending here sets you back weeks.
-  
+
   const hasAnyRole = Object.values(profile.roles || {}).some(xp => xp > 0);
   const isFreshSpawn = profile.gold < 15 && !hasAnyRole && profile.rank < 15;
 
@@ -104,7 +105,7 @@ export function analyzeEfficiency(profile, catalog, cart) {
   // Bolt Action unlock notification
   const boltAction = catalog.find(i => i.id === 'w_rif_bolt');
   const hasBoltInCart = boltAction && cart.includes(boltAction.id);
-  
+
   if (profile.rank >= 7 && profile.rank < 15 && !hasBoltInCart && profile.cash >= 216) {
     recommendations.push({
       priority: 1,
@@ -119,7 +120,7 @@ export function analyzeEfficiency(profile, catalog, cart) {
   if (profile.rank >= 8 && profile.rank < 20) {
     const varmint = catalog.find(i => i.id === 'w_rif_varmint');
     const hasVarmintInCart = varmint && cart.includes(varmint.id);
-    
+
     if (!hasVarmintInCart && profile.cash >= 72) {
       recommendations.push({
         priority: 3,
@@ -198,7 +199,7 @@ export function analyzeEfficiency(profile, catalog, cart) {
   }
 
   // Rule 4: Gold vs Cash Optimization
-  const goldPurchasableWithCash = cartItems.filter(item => 
+  const goldPurchasableWithCash = cartItems.filter(item =>
     item.gold > 0 && item.price > 0 && profile.cash >= item.price
   );
   if (goldPurchasableWithCash.length > 0 && profile.gold < profile.cash / 25) {
@@ -216,7 +217,7 @@ export function analyzeEfficiency(profile, catalog, cart) {
   const underleveledRoles = Object.entries(roles)
     .filter(([, xp]) => xp < 1000) // Less than level 5 equivalent
     .map(([name]) => name);
-  
+
   if (underleveledRoles.length >= 3 && cart.length > 0) {
     recommendations.push({
       priority: 4,
@@ -239,7 +240,7 @@ export function analyzeEfficiency(profile, catalog, cart) {
   }
 
   // Rule 7: High-Value Item Detection
-  const highValueItems = cartItems.filter(item => 
+  const highValueItems = cartItems.filter(item =>
     (item.gold >= 15) || (item.price >= 500)
   );
   if (highValueItems.length > 1) {
@@ -252,7 +253,76 @@ export function analyzeEfficiency(profile, catalog, cart) {
     });
   }
 
-  // Rule 8: Efficiency Score Calculation
+  // ═══ RULE 8: WEEKLY SPECIALS INTEGRATION ═══
+  // Surface discounted items from Rockstar Newswire that player can afford
+  if (specials?.discounts?.length > 0) {
+    // Find affordable discounts not already in cart
+    const affordableDiscounts = specials.discounts.filter(discount => {
+      // Check if item exists in catalog
+      const catalogItem = catalog.find(i => i.id === discount.itemId);
+      if (!catalogItem) return false;
+
+      // Skip if already in cart
+      if (cart.includes(discount.itemId)) return false;
+
+      // Check if player can afford sale price
+      const salePrice = discount.salePrice || (discount.originalPrice * (1 - discount.percentOff / 100));
+      const canAffordCash = profile.cash >= salePrice;
+      const canAffordGold = !discount.goldCost || profile.gold >= discount.goldCost;
+      const meetsRank = profile.rank >= (catalogItem.rank || 0);
+
+      return canAffordCash && canAffordGold && meetsRank;
+    });
+
+    // Priority recommendation for best discounts (30%+ off)
+    const bigDiscounts = affordableDiscounts.filter(d => d.percentOff >= 30);
+
+    if (bigDiscounts.length > 0) {
+      const topDiscount = bigDiscounts[0];
+      recommendations.push({
+        priority: 1,
+        title: `🏷️ SALE: ${topDiscount.name} (-${topDiscount.percentOff}%)`,
+        desc: `This week only! Save $${(topDiscount.originalPrice - topDiscount.salePrice).toFixed(0)} on ${topDiscount.name}. Sale ends ${specials.meta?.validUntil ? new Date(specials.meta.validUntil).toLocaleDateString() : 'soon'}.`,
+        action: 'Add to cart before weekly reset',
+        type: 'critical',
+        itemId: topDiscount.itemId,
+      });
+    }
+
+    // Info-level for smaller discounts
+    const smallDiscounts = affordableDiscounts.filter(d => d.percentOff < 30 && d.percentOff >= 20);
+    if (smallDiscounts.length > 0 && bigDiscounts.length === 0) {
+      recommendations.push({
+        priority: 3,
+        title: `💰 ${smallDiscounts.length} Item(s) On Sale`,
+        desc: `${smallDiscounts.map(d => `${d.name} (-${d.percentOff}%)`).join(', ')} are discounted this week.`,
+        action: 'Check Weekly Specials banner',
+        type: 'info',
+      });
+    }
+  }
+
+  // Surface 2X/3X bonus activities
+  if (specials?.bonuses?.length > 0) {
+    const activeBonuses = specials.bonuses.filter(b => b.multiplier >= 2);
+    const roleBonus = activeBonuses.find(b => b.role);
+
+    if (roleBonus) {
+      // Check if player has the role leveled
+      const roleXP = profile.roles?.[roleBonus.role] || 0;
+      if (roleXP >= 1000) { // At least level ~5
+        recommendations.push({
+          priority: 2,
+          title: `⚡ ${roleBonus.multiplier}X ${roleBonus.label.split(' on ')[1] || roleBonus.role} Week`,
+          desc: roleBonus.description,
+          action: 'Prioritize this activity for maximum earnings',
+          type: 'warning',
+        });
+      }
+    }
+  }
+
+  // Rule 9: Efficiency Score Calculation
   if (cart.length > 0 && recommendations.filter(r => r.type === 'critical').length === 0) {
     // Bonus for staying within budget with reserves
     if (cashAfter >= THRESHOLDS.CASH_RESERVE_MIN) metrics.efficiency += 5;
@@ -296,9 +366,9 @@ function generateSummary(metrics, recommendations) {
  * Quick affordability check for a single item
  */
 export function canAffordItem(profile, item) {
-  return profile.cash >= (item.price || 0) && 
-         profile.gold >= (item.gold || 0) &&
-         profile.rank >= (item.rank || 0);
+  return profile.cash >= (item.price || 0) &&
+    profile.gold >= (item.gold || 0) &&
+    profile.rank >= (item.rank || 0);
 }
 
 /**
@@ -307,9 +377,9 @@ export function canAffordItem(profile, item) {
 export function estimateTimeToAfford(profile, item, earningsPerHour = { cash: 200, gold: 0.5 }) {
   const cashNeeded = Math.max(0, (item.price || 0) - profile.cash);
   const goldNeeded = Math.max(0, (item.gold || 0) - profile.gold);
-  
+
   const hoursForCash = cashNeeded / earningsPerHour.cash;
   const hoursForGold = goldNeeded / earningsPerHour.gold;
-  
+
   return Math.max(hoursForCash, hoursForGold);
 }

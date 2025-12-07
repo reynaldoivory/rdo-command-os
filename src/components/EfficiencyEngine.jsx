@@ -2,38 +2,45 @@
 import React, { useMemo } from 'react';
 import { TrendingUp, AlertTriangle, CheckCircle, Info, AlertCircle } from 'lucide-react';
 import { analyzeEfficiency } from '../engine/DecisionTree';
+import { useSpecials } from '../hooks/useSpecials';
+import { useProfile } from '../context/ProfileContext';
 
 /**
  * EfficiencyEngine - Real-time analysis panel for purchase planning
  * Surfaces bottlenecks, warnings, and optimization opportunities
+ * Now integrates with weekly specials for discount recommendations
  */
-export const EfficiencyEngine = ({ profile, catalog, cart }) => {
+export const EfficiencyEngine = () => {
+  // Fetch weekly specials for discount integration
+  const { specials } = useSpecials();
+  const { profile, cart, CATALOG } = useProfile();
+
   const analysis = useMemo(
-    () => analyzeEfficiency(profile, catalog, cart), 
-    [profile, catalog, cart]
+    () => analyzeEfficiency(profile, CATALOG, cart, specials),
+    [profile, CATALOG, cart, specials]
   );
 
   // Icon and color mapping for recommendation types
   const typeConfig = {
-    critical: { 
-      icon: AlertCircle, 
-      bg: 'bg-red-900/20', 
+    critical: {
+      icon: AlertCircle,
+      bg: 'bg-red-900/20',
       border: 'border-red-500/50',
       accent: 'border-l-red-500',
       text: 'text-red-400',
       badge: 'bg-red-500/20 text-red-300 border-red-500/30'
     },
-    warning: { 
-      icon: AlertTriangle, 
-      bg: 'bg-amber-900/20', 
+    warning: {
+      icon: AlertTriangle,
+      bg: 'bg-amber-900/20',
       border: 'border-amber-500/30',
       accent: 'border-l-amber-500',
       text: 'text-amber-400',
       badge: 'bg-amber-500/20 text-amber-300 border-amber-500/30'
     },
-    info: { 
-      icon: Info, 
-      bg: 'bg-blue-900/10', 
+    info: {
+      icon: Info,
+      bg: 'bg-blue-900/10',
       border: 'border-blue-500/20',
       accent: 'border-l-blue-500',
       text: 'text-blue-400',
@@ -54,11 +61,11 @@ export const EfficiencyEngine = ({ profile, catalog, cart }) => {
     <div className="card-rdo rounded-xl p-6 mb-6 relative overflow-hidden">
       {/* Subtle shimmer effect for premium feel */}
       <div className="absolute inset-0 shimmer pointer-events-none opacity-30" />
-      
+
       {/* Header */}
       <div className="relative z-10 flex justify-between items-center mb-4 pb-3 border-b border-white/10">
         <h3 className="text-[#D4AF37] font-western text-lg flex items-center gap-2">
-          <TrendingUp size={18} className="text-[#D4AF37]" /> 
+          <TrendingUp size={18} className="text-[#D4AF37]" />
           Operational Efficiency
         </h3>
         <div className="text-right">
@@ -73,20 +80,18 @@ export const EfficiencyEngine = ({ profile, catalog, cart }) => {
       <div className="relative z-10 mb-4">
         <div className="flex justify-between items-center mb-1">
           <span className="text-[10px] text-gray-500 uppercase tracking-widest">System Efficiency</span>
-          <span className={`font-mono font-bold text-sm ${
-            analysis.metrics.efficiency >= 80 ? 'text-green-400' :
+          <span className={`font-mono font-bold text-sm ${analysis.metrics.efficiency >= 80 ? 'text-green-400' :
             analysis.metrics.efficiency >= 50 ? 'text-amber-400' : 'text-red-400'
-          }`}>
+            }`}>
             {analysis.metrics.efficiency}%
           </span>
         </div>
         <div className="h-2 bg-black/50 rounded-full overflow-hidden border border-white/5">
-          <div 
-            className={`h-full transition-all duration-500 ${
-              analysis.metrics.efficiency >= 80 ? 'bg-gradient-to-r from-green-600 to-green-400' :
-              analysis.metrics.efficiency >= 50 ? 'bg-gradient-to-r from-amber-600 to-amber-400' : 
-              'bg-gradient-to-r from-red-600 to-red-400'
-            }`}
+          <div
+            className={`h-full transition-all duration-500 ${analysis.metrics.efficiency >= 80 ? 'bg-gradient-to-r from-green-600 to-green-400' :
+              analysis.metrics.efficiency >= 50 ? 'bg-gradient-to-r from-amber-600 to-amber-400' :
+                'bg-gradient-to-r from-red-600 to-red-400'
+              }`}
             style={{ width: `${analysis.metrics.efficiency}%` }}
           />
         </div>
@@ -116,10 +121,10 @@ export const EfficiencyEngine = ({ profile, catalog, cart }) => {
           analysis.recommendations.slice(0, 3).map((rec, idx) => {
             const config = typeConfig[rec.type] || typeConfig.info;
             const Icon = config.icon;
-            
+
             return (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 className={`${config.bg} border-l-2 ${config.accent} pl-3 py-2 rounded-r-lg animate-fade-in-up`}
                 style={{ animationDelay: `${idx * 100}ms` }}
               >
@@ -162,3 +167,5 @@ export const EfficiencyEngine = ({ profile, catalog, cart }) => {
     </div>
   );
 };
+
+export default EfficiencyEngine;

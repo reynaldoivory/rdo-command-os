@@ -1,0 +1,1383 @@
+{
+    "meta": {
+        "version": 2,
+        "schemaVersion": "2.0.0",
+        "description": "RDO Hunting Compendium - Trader Efficiency Schema",
+        "maintainer": "RDO Command OS",
+        "last_updated": "2025-12-06",
+        "notes": "Economy split: trader.materialsPerfectCarcass vs butcher.perfectCarcassValueCash"
+    },
+    "definitions": {
+        "sizeClasses": {
+            "SMALL": {
+                "weapon": "Bow",
+                "ammo": "Small Game Arrows",
+                "desc": "Squirrels, Chipmunks, Rats, Snakes, Toads, Frogs"
+            },
+            "MODERATE": {
+                "weapon": "Varmint Rifle",
+                "ammo": ".22 Caliber",
+                "desc": "Rabbits, Raccoons, Badgers, Skunks, Muskrats"
+            },
+            "MEDIUM": {
+                "weapon": "Repeater / Bow",
+                "ammo": "Regular / Poison Arrow",
+                "desc": "Coyotes, Foxes, Beavers, Turkeys, Eagles"
+            },
+            "LARGE": {
+                "weapon": "Rifle",
+                "ammo": "Regular / Express",
+                "desc": "Deer, Bucks, Pronghorn, Sheep, Wolves, Cougars, Panthers"
+            },
+            "MASSIVE": {
+                "weapon": "Sniper Rifle",
+                "ammo": "Express / Improved Arrow",
+                "desc": "Bears, Moose, Elk, Alligators, Bison"
+            }
+        },
+        "weaponClasses": {
+            "bow_small_game": [
+                "w_bow"
+            ],
+            "varmint": [
+                "w_rif_varmint"
+            ],
+            "bow_regular": [
+                "w_bow"
+            ],
+            "repeater": [
+                "w_rep_carbine",
+                "w_rep_lancaster",
+                "w_rep_litchfield"
+            ],
+            "rifle": [
+                "w_rif_bolt",
+                "w_rif_springfield"
+            ],
+            "sniper": [
+                "w_rif_carcano",
+                "w_rif_rollingblock"
+            ],
+            "shotgun_slug": [
+                "w_sg_pump",
+                "w_sg_repeating"
+            ]
+        }
+    },
+    "animals": [
+        {
+            "id": "a_buck_whitetail",
+            "name": "Whitetail Buck",
+            "sizeClass": "LARGE",
+            "category": "herbivore",
+            "perfectKill": {
+                "requiredWeaponClass": "rifle",
+                "allowedWeaponIds": [
+                    "w_rif_bolt",
+                    "w_rif_springfield",
+                    "w_rif_carcano",
+                    "w_rif_rollingblock"
+                ],
+                "ammoNotes": "Regular or Express. Aim for Head/Heart."
+            },
+            "spawns": {
+                "biomes": [
+                    "Grassland",
+                    "Forest"
+                ],
+                "regions": [
+                    "The Heartlands",
+                    "Cumberland Forest",
+                    "Big Valley",
+                    "Scarlett Meadows"
+                ],
+                "timeOfDay": "any",
+                "weather": "any",
+                "hotspots": [
+                    {
+                        "x": 500,
+                        "y": 250,
+                        "desc": "Heartlands Overflow (North)",
+                        "nodeId": "valentine"
+                    }
+                ]
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 3.25,
+                    "perfectCarcassValueCash": 10.00
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 12.50,
+                    "materialsPerfectPelt": 0.00,
+                    "roleBonusNotes": "With Efficiency Skill: 15.63 Materials"
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_venison",
+                    "qty": 4
+                },
+                {
+                    "materialId": "antler_buck",
+                    "qty": 1
+                },
+                {
+                    "materialId": "fat_animal",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "The 'bread and butter' hunting target. Extremely common in Heartlands.",
+            "tags": [
+                "trader_meta",
+                "common",
+                "beginner"
+            ]
+        },
+        {
+            "id": "a_deer_whitetail",
+            "name": "Whitetail Deer",
+            "sizeClass": "LARGE",
+            "category": "herbivore",
+            "perfectKill": {
+                "requiredWeaponClass": "rifle",
+                "allowedWeaponIds": [
+                    "w_rif_bolt",
+                    "w_rif_springfield"
+                ],
+                "ammoNotes": "Regular or Express. Aim for Head/Heart."
+            },
+            "spawns": {
+                "biomes": [
+                    "Grassland",
+                    "Forest",
+                    "Mountains"
+                ],
+                "regions": [
+                    "Global - All Regions"
+                ],
+                "timeOfDay": "any",
+                "weather": "any",
+                "hotspots": []
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 2.50,
+                    "perfectCarcassValueCash": 7.00
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 8.75,
+                    "materialsPerfectPelt": 0.00,
+                    "roleBonusNotes": "Good filler for wagon."
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_venison",
+                    "qty": 2
+                },
+                {
+                    "materialId": "hide_deer",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Female deer. Less valuable than bucks but more common.",
+            "tags": [
+                "common",
+                "beginner"
+            ]
+        },
+        {
+            "id": "a_cougar",
+            "name": "Cougar",
+            "sizeClass": "LARGE",
+            "category": "predator",
+            "perfectKill": {
+                "requiredWeaponClass": "rifle",
+                "allowedWeaponIds": [
+                    "w_rif_bolt",
+                    "w_rif_springfield"
+                ],
+                "ammoNotes": "Express Ammo recommended. Face shots critical."
+            },
+            "spawns": {
+                "biomes": [
+                    "Arid",
+                    "Plains"
+                ],
+                "regions": [
+                    "Great Plains",
+                    "Roanoke Ridge",
+                    "Cholla Springs"
+                ],
+                "timeOfDay": "night_dawn",
+                "weather": "clear",
+                "hotspots": [
+                    {
+                        "x": 300,
+                        "y": 380,
+                        "desc": "Blackwater Windmill",
+                        "nodeId": "blackwater"
+                    }
+                ]
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 5.00,
+                    "perfectCarcassValueCash": 13.50
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 16.88,
+                    "materialsPerfectPelt": 0.00,
+                    "roleBonusNotes": "Base 13.50 * 1.25 efficiency = 16.875"
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_big_game",
+                    "qty": 2
+                },
+                {
+                    "materialId": "fang_cougar",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Top-tier Trader target. Dangerous - always use Dead Eye.",
+            "tags": [
+                "danger",
+                "high_value",
+                "trader_meta"
+            ]
+        },
+        {
+            "id": "a_panther",
+            "name": "Panther",
+            "sizeClass": "LARGE",
+            "category": "predator",
+            "perfectKill": {
+                "requiredWeaponClass": "rifle",
+                "allowedWeaponIds": [
+                    "w_rif_bolt",
+                    "w_rif_springfield"
+                ],
+                "ammoNotes": "Express Ammo. Fastest predator - use Dead Eye immediately."
+            },
+            "spawns": {
+                "biomes": [
+                    "Swamp",
+                    "Forest"
+                ],
+                "regions": [
+                    "Lemoyne",
+                    "Bayou Nwa"
+                ],
+                "timeOfDay": "night",
+                "weather": "any",
+                "hotspots": [
+                    {
+                        "x": 650,
+                        "y": 420,
+                        "desc": "Old Harry Fen",
+                        "nodeId": "saint_denis"
+                    }
+                ]
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 6.50,
+                    "perfectCarcassValueCash": 13.50
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 16.88,
+                    "materialsPerfectPelt": 0.00,
+                    "roleBonusNotes": "Same as Cougar - equal value to Cripps"
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_big_game",
+                    "qty": 2
+                },
+                {
+                    "materialId": "fang_panther",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Extremely dangerous. Only spawns at night. Fastest attack in game.",
+            "tags": [
+                "danger",
+                "high_value",
+                "night_only"
+            ]
+        },
+        {
+            "id": "a_pronghorn_buck",
+            "name": "Pronghorn Buck",
+            "sizeClass": "LARGE",
+            "category": "herbivore",
+            "perfectKill": {
+                "requiredWeaponClass": "rifle",
+                "allowedWeaponIds": [
+                    "w_rif_bolt",
+                    "w_rif_springfield"
+                ],
+                "ammoNotes": "Regular or Express. Very fast - lead your shot."
+            },
+            "spawns": {
+                "biomes": [
+                    "Plains",
+                    "Arid"
+                ],
+                "regions": [
+                    "Great Plains",
+                    "Hennigan's Stead",
+                    "New Austin"
+                ],
+                "timeOfDay": "any",
+                "weather": "any",
+                "hotspots": [
+                    {
+                        "x": 250,
+                        "y": 350,
+                        "desc": "Blackwater Outskirts",
+                        "nodeId": "blackwater"
+                    }
+                ]
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 3.00,
+                    "perfectCarcassValueCash": 7.00
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 8.75,
+                    "materialsPerfectPelt": 0.00,
+                    "roleBonusNotes": ""
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_game",
+                    "qty": 2
+                },
+                {
+                    "materialId": "antler_pronghorn",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Fastest land animal. Difficult to hunt but decent value.",
+            "tags": [
+                "common",
+                "fast"
+            ]
+        },
+        {
+            "id": "a_gator_small",
+            "name": "Alligator (Small)",
+            "sizeClass": "LARGE",
+            "category": "reptile",
+            "perfectKill": {
+                "requiredWeaponClass": "rifle",
+                "allowedWeaponIds": [
+                    "w_rif_bolt"
+                ],
+                "ammoNotes": "Must be the smaller variant to carry on horse."
+            },
+            "spawns": {
+                "biomes": [
+                    "Swamp"
+                ],
+                "regions": [
+                    "Bayou Nwa",
+                    "Bluewater Marsh"
+                ],
+                "timeOfDay": "day",
+                "weather": "any",
+                "hotspots": [
+                    {
+                        "x": 700,
+                        "y": 380,
+                        "desc": "Lagras Waterfront",
+                        "nodeId": "saint_denis"
+                    }
+                ]
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 3.50,
+                    "perfectCarcassValueCash": 6.50
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 8.13,
+                    "materialsPerfectPelt": 0.00,
+                    "roleBonusNotes": "Good filler if Cougars unavailable"
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_big_game",
+                    "qty": 3
+                },
+                {
+                    "materialId": "tooth_gator",
+                    "qty": 1
+                },
+                {
+                    "materialId": "skin_gator",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Static spawns in swamp. Easy farm but low efficiency.",
+            "tags": [
+                "easy_farm",
+                "static_spawn"
+            ]
+        },
+        {
+            "id": "a_gator_large",
+            "name": "Alligator (Large)",
+            "sizeClass": "MASSIVE",
+            "category": "reptile",
+            "perfectKill": {
+                "requiredWeaponClass": "sniper",
+                "allowedWeaponIds": [
+                    "w_rif_carcano",
+                    "w_rif_rollingblock"
+                ],
+                "ammoNotes": "Express rounds. Cannot be stored on horse - skin only."
+            },
+            "spawns": {
+                "biomes": [
+                    "Swamp"
+                ],
+                "regions": [
+                    "Bayou Nwa",
+                    "Bluewater Marsh"
+                ],
+                "timeOfDay": "any",
+                "weather": "any",
+                "hotspots": []
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 7.00,
+                    "perfectCarcassValueCash": 0.00
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 0.00,
+                    "materialsPerfectPelt": 3.50,
+                    "roleBonusNotes": "Cannot donate carcass - too large"
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_big_game",
+                    "qty": 5
+                },
+                {
+                    "materialId": "tooth_gator",
+                    "qty": 3
+                },
+                {
+                    "materialId": "skin_gator",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Cannot store on horse. Skin and teeth only.",
+            "tags": [
+                "massive",
+                "skin_only"
+            ]
+        },
+        {
+            "id": "a_bear_black",
+            "name": "Black Bear",
+            "sizeClass": "MASSIVE",
+            "category": "predator",
+            "perfectKill": {
+                "requiredWeaponClass": "sniper",
+                "allowedWeaponIds": [
+                    "w_rif_carcano",
+                    "w_rif_rollingblock"
+                ],
+                "ammoNotes": "Express rounds. Aim for head."
+            },
+            "spawns": {
+                "biomes": [
+                    "Forest",
+                    "Mountains"
+                ],
+                "regions": [
+                    "Big Valley",
+                    "Tall Trees",
+                    "Roanoke Ridge"
+                ],
+                "timeOfDay": "any",
+                "weather": "any",
+                "hotspots": [
+                    {
+                        "x": 280,
+                        "y": 280,
+                        "desc": "Aurora Basin",
+                        "nodeId": "strawberry"
+                    }
+                ]
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 4.00,
+                    "perfectCarcassValueCash": 0.00
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 0.00,
+                    "materialsPerfectPelt": 4.00,
+                    "roleBonusNotes": "Skin only - cannot carry carcass"
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_big_game",
+                    "qty": 5
+                },
+                {
+                    "materialId": "fat_animal",
+                    "qty": 2
+                },
+                {
+                    "materialId": "claw_bear",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Dangerous. Skin only - carcass too heavy.",
+            "tags": [
+                "danger",
+                "massive",
+                "skin_only"
+            ]
+        },
+        {
+            "id": "a_bear_grizzly",
+            "name": "Grizzly Bear",
+            "sizeClass": "MASSIVE",
+            "category": "predator",
+            "perfectKill": {
+                "requiredWeaponClass": "sniper",
+                "allowedWeaponIds": [
+                    "w_rif_carcano",
+                    "w_rif_rollingblock"
+                ],
+                "ammoNotes": "Express rounds. Multiple shots may be needed."
+            },
+            "spawns": {
+                "biomes": [
+                    "Mountains",
+                    "Forest"
+                ],
+                "regions": [
+                    "Grizzlies",
+                    "Ambarino",
+                    "Tall Trees"
+                ],
+                "timeOfDay": "any",
+                "weather": "any",
+                "hotspots": []
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 7.50,
+                    "perfectCarcassValueCash": 0.00
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 0.00,
+                    "materialsPerfectPelt": 6.00,
+                    "roleBonusNotes": "Skin only - cannot carry carcass"
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_big_game",
+                    "qty": 6
+                },
+                {
+                    "materialId": "fat_animal",
+                    "qty": 3
+                },
+                {
+                    "materialId": "claw_bear",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Most dangerous non-legendary animal. Extremely tanky.",
+            "tags": [
+                "danger",
+                "massive",
+                "skin_only"
+            ]
+        },
+        {
+            "id": "a_elk",
+            "name": "Elk",
+            "sizeClass": "MASSIVE",
+            "category": "herbivore",
+            "perfectKill": {
+                "requiredWeaponClass": "sniper",
+                "allowedWeaponIds": [
+                    "w_rif_carcano",
+                    "w_rif_rollingblock"
+                ],
+                "ammoNotes": "Express rounds. Improved bow arrow also works."
+            },
+            "spawns": {
+                "biomes": [
+                    "Mountains",
+                    "Forest"
+                ],
+                "regions": [
+                    "Ambarino",
+                    "Big Valley",
+                    "Cumberland Forest"
+                ],
+                "timeOfDay": "any",
+                "weather": "any",
+                "hotspots": [
+                    {
+                        "x": 400,
+                        "y": 180,
+                        "desc": "Valentine North",
+                        "nodeId": "valentine"
+                    }
+                ]
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 6.50,
+                    "perfectCarcassValueCash": 0.00
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 0.00,
+                    "materialsPerfectPelt": 5.00,
+                    "roleBonusNotes": "Skin only - cannot carry carcass"
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_game",
+                    "qty": 6
+                },
+                {
+                    "materialId": "antler_elk",
+                    "qty": 1
+                },
+                {
+                    "materialId": "hide_elk",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Common in Ambarino. Skin only.",
+            "tags": [
+                "massive",
+                "skin_only"
+            ]
+        },
+        {
+            "id": "a_moose",
+            "name": "Moose",
+            "sizeClass": "MASSIVE",
+            "category": "herbivore",
+            "perfectKill": {
+                "requiredWeaponClass": "sniper",
+                "allowedWeaponIds": [
+                    "w_rif_carcano",
+                    "w_rif_rollingblock"
+                ],
+                "ammoNotes": "Express rounds. Very tanky."
+            },
+            "spawns": {
+                "biomes": [
+                    "Mountains",
+                    "Swamp"
+                ],
+                "regions": [
+                    "Ambarino",
+                    "Roanoke Ridge",
+                    "O'Creagh's Run"
+                ],
+                "timeOfDay": "any",
+                "weather": "any",
+                "hotspots": [
+                    {
+                        "x": 550,
+                        "y": 150,
+                        "desc": "O'Creagh's Run",
+                        "nodeId": "annesburg"
+                    }
+                ]
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 7.50,
+                    "perfectCarcassValueCash": 0.00
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 0.00,
+                    "materialsPerfectPelt": 6.50,
+                    "roleBonusNotes": "Highest pelt value in game (non-legendary)"
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_game",
+                    "qty": 5
+                },
+                {
+                    "materialId": "antler_moose",
+                    "qty": 1
+                },
+                {
+                    "materialId": "hide_moose",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Rarest animal in game. Very low spawn rate.",
+            "tags": [
+                "rare",
+                "massive",
+                "skin_only",
+                "high_value"
+            ]
+        },
+        {
+            "id": "a_bison",
+            "name": "American Bison",
+            "sizeClass": "MASSIVE",
+            "category": "herbivore",
+            "perfectKill": {
+                "requiredWeaponClass": "sniper",
+                "allowedWeaponIds": [
+                    "w_rif_carcano",
+                    "w_rif_rollingblock"
+                ],
+                "ammoNotes": "Express rounds. Multiple shots often needed."
+            },
+            "spawns": {
+                "biomes": [
+                    "Plains"
+                ],
+                "regions": [
+                    "Great Plains",
+                    "The Heartlands"
+                ],
+                "timeOfDay": "any",
+                "weather": "any",
+                "hotspots": [
+                    {
+                        "x": 300,
+                        "y": 320,
+                        "desc": "Great Plains Herd",
+                        "nodeId": "blackwater"
+                    }
+                ]
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 5.00,
+                    "perfectCarcassValueCash": 0.00
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 0.00,
+                    "materialsPerfectPelt": 4.00,
+                    "roleBonusNotes": "Skin only - cannot carry carcass"
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_prime_beef",
+                    "qty": 6
+                },
+                {
+                    "materialId": "horn_bison",
+                    "qty": 1
+                },
+                {
+                    "materialId": "hide_bison",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Herds near Blackwater. Easy to find.",
+            "tags": [
+                "massive",
+                "skin_only",
+                "herd"
+            ]
+        },
+        {
+            "id": "a_wolf",
+            "name": "Wolf",
+            "sizeClass": "LARGE",
+            "category": "predator",
+            "perfectKill": {
+                "requiredWeaponClass": "rifle",
+                "allowedWeaponIds": [
+                    "w_rif_bolt",
+                    "w_rif_springfield"
+                ],
+                "ammoNotes": "Regular or Express. Come in packs - use Dead Eye."
+            },
+            "spawns": {
+                "biomes": [
+                    "Mountains",
+                    "Forest"
+                ],
+                "regions": [
+                    "Ambarino",
+                    "Tall Trees",
+                    "Grizzlies"
+                ],
+                "timeOfDay": "night",
+                "weather": "any",
+                "hotspots": []
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 3.50,
+                    "perfectCarcassValueCash": 8.00
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 10.00,
+                    "materialsPerfectPelt": 0.00,
+                    "roleBonusNotes": ""
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_game",
+                    "qty": 2
+                },
+                {
+                    "materialId": "heart_wolf",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Travel in packs. Can be dangerous at night.",
+            "tags": [
+                "danger",
+                "pack"
+            ]
+        },
+        {
+            "id": "a_coyote",
+            "name": "Coyote",
+            "sizeClass": "MEDIUM",
+            "category": "predator",
+            "perfectKill": {
+                "requiredWeaponClass": "repeater",
+                "allowedWeaponIds": [
+                    "w_rep_carbine",
+                    "w_rep_lancaster",
+                    "w_rep_litchfield",
+                    "w_bow"
+                ],
+                "ammoNotes": "Regular ammo or poison arrow."
+            },
+            "spawns": {
+                "biomes": [
+                    "Plains",
+                    "Arid",
+                    "Desert"
+                ],
+                "regions": [
+                    "New Austin",
+                    "Great Plains",
+                    "The Heartlands"
+                ],
+                "timeOfDay": "night_dawn",
+                "weather": "any",
+                "hotspots": []
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 2.00,
+                    "perfectCarcassValueCash": 4.00
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 5.00,
+                    "materialsPerfectPelt": 0.00,
+                    "roleBonusNotes": "Low value - only use as filler"
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_game",
+                    "qty": 1
+                },
+                {
+                    "materialId": "pelt_coyote",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Common scavenger. Low value but easy to find.",
+            "tags": [
+                "common",
+                "low_value"
+            ]
+        },
+        {
+            "id": "a_fox",
+            "name": "Fox",
+            "sizeClass": "MEDIUM",
+            "category": "predator",
+            "perfectKill": {
+                "requiredWeaponClass": "repeater",
+                "allowedWeaponIds": [
+                    "w_rep_carbine",
+                    "w_rep_lancaster",
+                    "w_bow"
+                ],
+                "ammoNotes": "Regular ammo or regular arrow."
+            },
+            "spawns": {
+                "biomes": [
+                    "Forest",
+                    "Plains"
+                ],
+                "regions": [
+                    "Lemoyne",
+                    "The Heartlands",
+                    "Scarlett Meadows"
+                ],
+                "timeOfDay": "night_dawn",
+                "weather": "any",
+                "hotspots": []
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 2.50,
+                    "perfectCarcassValueCash": 4.50
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 5.63,
+                    "materialsPerfectPelt": 0.00,
+                    "roleBonusNotes": ""
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_game",
+                    "qty": 1
+                },
+                {
+                    "materialId": "pelt_fox",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Fast and skittish. Harder to hunt than coyotes.",
+            "tags": [
+                "common",
+                "fast"
+            ]
+        },
+        {
+            "id": "a_rabbit",
+            "name": "Rabbit",
+            "sizeClass": "MODERATE",
+            "category": "herbivore",
+            "perfectKill": {
+                "requiredWeaponClass": "varmint",
+                "allowedWeaponIds": [
+                    "w_rif_varmint"
+                ],
+                "ammoNotes": ".22 caliber only."
+            },
+            "spawns": {
+                "biomes": [
+                    "Global"
+                ],
+                "regions": [
+                    "All Regions"
+                ],
+                "timeOfDay": "any",
+                "weather": "any",
+                "hotspots": []
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 1.00,
+                    "perfectCarcassValueCash": 2.00
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 2.50,
+                    "materialsPerfectPelt": 0.00,
+                    "roleBonusNotes": "Very low value"
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_game",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Abundant everywhere. Low value but easy.",
+            "tags": [
+                "common",
+                "easy",
+                "low_value"
+            ]
+        },
+        {
+            "id": "a_badger",
+            "name": "Badger",
+            "sizeClass": "MODERATE",
+            "category": "omnivore",
+            "perfectKill": {
+                "requiredWeaponClass": "varmint",
+                "allowedWeaponIds": [
+                    "w_rif_varmint"
+                ],
+                "ammoNotes": ".22 caliber only."
+            },
+            "spawns": {
+                "biomes": [
+                    "Plains",
+                    "Forest"
+                ],
+                "regions": [
+                    "The Heartlands",
+                    "Scarlett Meadows",
+                    "Big Valley"
+                ],
+                "timeOfDay": "night",
+                "weather": "any",
+                "hotspots": []
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 1.50,
+                    "perfectCarcassValueCash": 2.50
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 3.13,
+                    "materialsPerfectPelt": 0.00,
+                    "roleBonusNotes": ""
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_game",
+                    "qty": 1
+                },
+                {
+                    "materialId": "claw_badger",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Nocturnal. Often found near farms.",
+            "tags": [
+                "common",
+                "night_only"
+            ]
+        },
+        {
+            "id": "a_raccoon",
+            "name": "Raccoon",
+            "sizeClass": "MODERATE",
+            "category": "omnivore",
+            "perfectKill": {
+                "requiredWeaponClass": "varmint",
+                "allowedWeaponIds": [
+                    "w_rif_varmint"
+                ],
+                "ammoNotes": ".22 caliber only."
+            },
+            "spawns": {
+                "biomes": [
+                    "Forest",
+                    "Swamp"
+                ],
+                "regions": [
+                    "Lemoyne",
+                    "Roanoke Ridge",
+                    "Bluewater Marsh"
+                ],
+                "timeOfDay": "night",
+                "weather": "any",
+                "hotspots": []
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 1.50,
+                    "perfectCarcassValueCash": 2.75
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 3.44,
+                    "materialsPerfectPelt": 0.00,
+                    "roleBonusNotes": ""
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_game",
+                    "qty": 1
+                },
+                {
+                    "materialId": "pelt_raccoon",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Nocturnal. Common in Lemoyne.",
+            "tags": [
+                "common",
+                "night_only"
+            ]
+        },
+        {
+            "id": "a_squirrel",
+            "name": "Squirrel",
+            "sizeClass": "SMALL",
+            "category": "herbivore",
+            "perfectKill": {
+                "requiredWeaponClass": "bow_small_game",
+                "allowedWeaponIds": [
+                    "w_bow"
+                ],
+                "ammoNotes": "Small Game Arrows ONLY."
+            },
+            "spawns": {
+                "biomes": [
+                    "Forest"
+                ],
+                "regions": [
+                    "All Forested Regions"
+                ],
+                "timeOfDay": "day",
+                "weather": "any",
+                "hotspots": []
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 0.50,
+                    "perfectCarcassValueCash": 0.75
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 0.94,
+                    "materialsPerfectPelt": 0.00,
+                    "roleBonusNotes": "Extremely low value"
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_stringy",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Small game arrows required. Not worth hunting for Trader.",
+            "tags": [
+                "tiny",
+                "low_value"
+            ]
+        },
+        {
+            "id": "a_turkey",
+            "name": "Wild Turkey",
+            "sizeClass": "MEDIUM",
+            "category": "bird",
+            "perfectKill": {
+                "requiredWeaponClass": "repeater",
+                "allowedWeaponIds": [
+                    "w_rep_carbine",
+                    "w_rep_lancaster",
+                    "w_bow"
+                ],
+                "ammoNotes": "Regular ammo or regular arrow."
+            },
+            "spawns": {
+                "biomes": [
+                    "Forest",
+                    "Plains"
+                ],
+                "regions": [
+                    "Lemoyne",
+                    "The Heartlands",
+                    "Scarlett Meadows"
+                ],
+                "timeOfDay": "day",
+                "weather": "any",
+                "hotspots": []
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 1.50,
+                    "perfectCarcassValueCash": 3.25
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 4.06,
+                    "materialsPerfectPelt": 0.00,
+                    "roleBonusNotes": ""
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "meat_game",
+                    "qty": 2
+                },
+                {
+                    "materialId": "feathers_flight",
+                    "qty": 3
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Good for feathers. Common near farms.",
+            "tags": [
+                "common",
+                "feathers"
+            ]
+        },
+        {
+            "id": "a_eagle",
+            "name": "Eagle",
+            "sizeClass": "MEDIUM",
+            "category": "bird",
+            "perfectKill": {
+                "requiredWeaponClass": "repeater",
+                "allowedWeaponIds": [
+                    "w_rif_varmint",
+                    "w_bow"
+                ],
+                "ammoNotes": "Varmint rifle or regular arrow."
+            },
+            "spawns": {
+                "biomes": [
+                    "Mountains",
+                    "Plains"
+                ],
+                "regions": [
+                    "Ambarino",
+                    "New Austin",
+                    "Great Plains"
+                ],
+                "timeOfDay": "day",
+                "weather": "clear",
+                "hotspots": []
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 2.50,
+                    "perfectCarcassValueCash": 4.00
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 5.00,
+                    "materialsPerfectPelt": 0.00,
+                    "roleBonusNotes": ""
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "feathers_flight",
+                    "qty": 6
+                },
+                {
+                    "materialId": "talon_eagle",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Flies in circles. Wait for it to land or dive.",
+            "tags": [
+                "bird",
+                "feathers"
+            ]
+        },
+        {
+            "id": "a_snake",
+            "name": "Snake",
+            "sizeClass": "SMALL",
+            "category": "reptile",
+            "perfectKill": {
+                "requiredWeaponClass": "bow_small_game",
+                "allowedWeaponIds": [
+                    "w_bow"
+                ],
+                "ammoNotes": "Small Game Arrows ONLY."
+            },
+            "spawns": {
+                "biomes": [
+                    "Swamp",
+                    "Desert",
+                    "Plains"
+                ],
+                "regions": [
+                    "Lemoyne",
+                    "New Austin",
+                    "Scarlett Meadows"
+                ],
+                "timeOfDay": "day",
+                "weather": "any",
+                "hotspots": []
+            },
+            "economy": {
+                "butcher": {
+                    "perfectPeltValueCash": 0.50,
+                    "perfectCarcassValueCash": 0.75
+                },
+                "trader": {
+                    "materialsPerfectCarcass": 0.94,
+                    "materialsPerfectPelt": 0.00,
+                    "roleBonusNotes": "Extremely low value"
+                }
+            },
+            "yields": [
+                {
+                    "materialId": "skin_snake",
+                    "qty": 1
+                }
+            ],
+            "onlineOnly": false,
+            "verifiedOnline": true,
+            "notes": "Can be venomous. Small game arrows required.",
+            "tags": [
+                "tiny",
+                "danger",
+                "low_value"
+            ]
+        }
+    ]
+}

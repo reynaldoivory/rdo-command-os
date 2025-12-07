@@ -1,0 +1,24 @@
+{
+    "recommendations": [
+        // Core Development
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        // React
+        "dsznajder.es7-react-js-snippets",
+        "burkeholland.simple-react-snippets",
+        // Testing
+        "vitest.explorer",
+        // Git
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        // Code Quality
+        "sonarsource.sonarlint-vscode",
+        // Productivity
+        "formulahendry.code-runner",
+        "christian-kohler.path-intellisense",
+        "aaron-bond.better-comments",
+        // Bundle Analysis
+        "AchoArnold.source-map-visualizer"
+    ]
+}

@@ -1,0 +1,78 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base",
+    ":preserveSemverRanges",
+    ":semanticCommits",
+    "group:recommended"
+  ],
+  "description": "RDO COMMAND OS.25 - Automated Dependency Management",
+  
+  "schedule": ["before 6am on monday"],
+  "timezone": "America/New_York",
+  
+  "labels": ["dependencies", "renovate"],
+  "assignees": [],
+  
+  "packageRules": [
+    {
+      "description": "Auto-merge patch updates for production deps",
+      "matchUpdateTypes": ["patch"],
+      "matchDepTypes": ["dependencies"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Auto-merge all devDependency updates",
+      "matchDepTypes": ["devDependencies"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Group React ecosystem updates",
+      "matchPackagePatterns": ["^react", "^@types/react"],
+      "groupName": "React",
+      "groupSlug": "react"
+    },
+    {
+      "description": "Group Vite ecosystem updates", 
+      "matchPackagePatterns": ["^vite", "^@vitejs"],
+      "groupName": "Vite",
+      "groupSlug": "vite"
+    },
+    {
+      "description": "Group ESLint ecosystem updates",
+      "matchPackagePatterns": ["^eslint", "^@eslint"],
+      "groupName": "ESLint",
+      "groupSlug": "eslint"
+    },
+    {
+      "description": "Group Tailwind ecosystem updates",
+      "matchPackagePatterns": ["^tailwind", "^postcss", "^autoprefixer"],
+      "groupName": "Tailwind CSS",
+      "groupSlug": "tailwind"
+    },
+    {
+      "description": "Major updates require manual review",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["dependencies", "renovate", "breaking-change"]
+    }
+  ],
+  
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security"]
+  },
+  
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  
+  "commitMessagePrefix": "chore(deps):",
+  "commitMessageAction": "update",
+  
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "🤠 Dependency Roundup"
+}
