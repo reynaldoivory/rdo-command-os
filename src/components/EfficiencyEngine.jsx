@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { TrendingUp, AlertTriangle, CheckCircle, Info, AlertCircle } from 'lucide-react';
 import { analyzeEfficiency } from '../engine/DecisionTree';
 import { useSpecials } from '../hooks/useSpecials';
-import { useProfile } from '../context/ProfileContext';
+import { useProfile } from '../context';
 
 /**
  * EfficiencyEngine - Real-time analysis panel for purchase planning

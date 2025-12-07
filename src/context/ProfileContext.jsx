@@ -4,33 +4,14 @@
 // Eliminates prop drilling for profile, cart, and catalog state
 // ═══════════════════════════════════════════════════════════════════════════
 
-import React, { createContext, useContext, useMemo, useState } from 'react';
-import { analyzeProfile } from '../logic/nextBestAction';
-import { explainAnalysis } from '../logic/nextBestAction';
+import React, { useMemo, useState, useCallback } from 'react';
+import { analyzeProfile, explainAnalysis } from '../logic/nextBestAction';
 import { CATALOG, UI_CONFIG } from '../data/rdo-data';
 import { usePersistentState } from '../hooks/usePersistentState';
 import { migrateProfile } from '../utils/migrations';
 import { getLevelFromXP } from '../utils/rdo-logic';
-
-// Fresh Spawn Default State
-const DEFAULT_PROFILE = {
-    rank: 1,
-    xp: 0,
-    cash: 0,
-    gold: 0,
-    tokens: 0,
-    location: 'valentine',
-    roles: {
-        bountyHunter: 0,
-        trader: 0,
-        collector: 0,
-        moonshiner: 0,
-        naturalist: 0
-    }
-};
-
-// Context with undefined default (forces provider usage)
-const ProfileContext = createContext(undefined);
+import { DEFAULT_PROFILE } from './profileConstants';
+import { ProfileContext } from './profileContextInstance';
 
 /**
  * ProfileProvider - Wraps Dashboard to provide global state access
@@ -71,43 +52,45 @@ export function ProfileProvider({ profileId, children }) {
     const nextBestAction = useMemo(() => analyzeProfile(profile, { load: wagonLoadPercent }), [profile, wagonLoadPercent]);
     const analysisDiagnostics = useMemo(() => explainAnalysis(profile, { load: wagonLoadPercent }), [profile, wagonLoadPercent]);
 
-    // Cart operations
-    const addToCart = (itemId) => {
+    // Cart operations - memoized with useCallback for stable references
+    const addToCart = useCallback((itemId) => {
         setCart(prev => prev.includes(itemId) ? prev : [...prev, itemId]);
-    };
+    }, [setCart]);
 
-    const removeFromCart = (itemId) => {
+    const removeFromCart = useCallback((itemId) => {
         setCart(prev => prev.filter(id => id !== itemId));
-    };
+    }, [setCart]);
 
-    const toggleCartItem = (itemId) => {
+    const toggleCartItem = useCallback((itemId) => {
         setCart(prev => prev.includes(itemId)
             ? prev.filter(id => id !== itemId)
             : [...prev, itemId]
         );
-    };
+    }, [setCart]);
 
-    const clearCart = () => setCart([]);
+    const clearCart = useCallback(() => {
+        setCart([]);
+    }, [setCart]);
 
-    // Profile operations
-    const updateProfile = (updates) => {
+    // Profile operations - memoized with useCallback for stable references
+    const updateProfile = useCallback((updates) => {
         setProfile(prev => ({ ...prev, ...updates }));
-    };
+    }, [setProfile]);
 
-    const updateRole = (roleKey, xp) => {
+    const updateRole = useCallback((roleKey, xp) => {
         setProfile(prev => ({
             ...prev,
             roles: { ...prev.roles, [roleKey]: xp }
         }));
-    };
+    }, [setProfile]);
 
-    const travel = (destinationKey, cost) => {
+    const travel = useCallback((destinationKey, cost) => {
         setProfile(prev => ({
             ...prev,
             location: destinationKey,
             cash: prev.cash - cost
         }));
-    };
+    }, [setProfile]);
 
     // Context value - memoized to prevent unnecessary re-renders
     const value = useMemo(() => ({
@@ -136,8 +119,8 @@ export function ProfileProvider({ profileId, children }) {
 
         // Static data references
         CATALOG,
-        UI_CONFIG
-        ,
+        UI_CONFIG,
+
         // UI state
         filter,
         setFilter,
@@ -145,7 +128,27 @@ export function ProfileProvider({ profileId, children }) {
         // Engine outputs
         nextBestAction,
         analysisDiagnostics,
-    }), [profile, cart, profileId, level, cartTotals, remaining, filter, wagonLoadPercent]);
+    }), [
+        profile,
+        cart,
+        profileId,
+        level,
+        cartTotals,
+        remaining,
+        filter,
+        setProfile,
+        updateProfile,
+        updateRole,
+        travel,
+        setCart,
+        addToCart,
+        removeFromCart,
+        toggleCartItem,
+        clearCart,
+        setFilter,
+        nextBestAction,
+        analysisDiagnostics
+    ]);
 
     return (
         <ProfileContext.Provider value={value}>
@@ -154,39 +157,3 @@ export function ProfileProvider({ profileId, children }) {
     );
 }
 
-/**
- * useProfile - Hook to access profile context
- * @throws Error if used outside ProfileProvider
- */
-export function useProfile() {
-    const context = useContext(ProfileContext);
-    if (context === undefined) {
-        throw new Error('useProfile must be used within a ProfileProvider');
-    }
-    return context;
-}
-
-/**
- * useCart - Convenience hook for cart-only access
- */
-export function useCart() {
-    const { cart, cartTotals, remaining, addToCart, removeFromCart, toggleCartItem, clearCart } = useProfile();
-    return { cart, cartTotals, remaining, addToCart, removeFromCart, toggleCartItem, clearCart };
-}
-
-/**
- * useWallet - Convenience hook for wallet-only access
- */
-export function useWallet() {
-    const { profile, level, updateProfile, setProfile } = useProfile();
-    return {
-        cash: profile.cash,
-        gold: profile.gold,
-        tokens: profile.tokens,
-        xp: profile.xp,
-        rank: profile.rank,
-        level,
-        updateProfile,
-        setProfile
-    };
-}

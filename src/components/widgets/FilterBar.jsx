@@ -1,5 +1,5 @@
 import React from 'react';
-import { useProfile } from '../../context/ProfileContext';
+import { useProfile } from '../../context';
 
 export const FilterBar = () => {
     const { filter, setFilter, UI_CONFIG } = useProfile();

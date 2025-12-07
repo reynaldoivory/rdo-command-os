@@ -5,7 +5,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 import React from 'react';
-import { useProfile } from '../context/ProfileContext';
+import { useProfile } from '../context';
 import {
     Truck, Target, Map, Beaker, TrendingUp, Crown, Star, Compass,
     AlertTriangle, Shield, ArrowRight, Calendar, Crosshair

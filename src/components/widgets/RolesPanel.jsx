@@ -1,6 +1,6 @@
 import React from 'react';
 import { RoleCard } from './RoleCard';
-import { useProfile } from '../../context/ProfileContext';
+import { useProfile } from '../../context';
 import { ROLES } from '../../data/rdo-data';
 
 export const RolesPanel = () => {

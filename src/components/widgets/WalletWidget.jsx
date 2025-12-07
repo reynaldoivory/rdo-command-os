@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useProfile } from '../../context/ProfileContext';
+import { useProfile } from '../../context';
 import { getXPFromLevel } from '../../utils/rdo-logic';
 import { User, DollarSign, Coins, Star, Edit2, Check, X, Award } from 'lucide-react';
 

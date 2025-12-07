@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useProfile } from '../../context/ProfileContext';
+import { useProfile } from '../../context';
 import { Lock, ShoppingCart, Package } from 'lucide-react';
 
 export const CatalogGrid = () => {

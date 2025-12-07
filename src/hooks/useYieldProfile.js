@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useProfile } from '../context/ProfileContext';
+import { useProfile } from '../context';
 
 export function useYieldProfile() {
     const { profile } = useProfile();

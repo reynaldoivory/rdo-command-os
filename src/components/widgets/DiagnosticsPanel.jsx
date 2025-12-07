@@ -1,6 +1,6 @@
 import React from 'react';
 import { Activity } from 'lucide-react';
-import { useProfile } from '../../context/ProfileContext';
+import { useProfile } from '../../context';
 
 export const DiagnosticsPanel = () => {
     const { nextBestAction, analysisDiagnostics } = useProfile();

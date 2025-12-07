@@ -10,7 +10,7 @@ import {
     Zap, Target, Package, Search, Leaf, Coins, DollarSign,
     Clock, Calendar, ChevronRight, Star, TrendingUp
 } from 'lucide-react';
-import { useProfile } from '../../context/ProfileContext';
+import { useProfile } from '../../context';
 import { useDailies } from '../../hooks/useDailies';
 import { getNextEvent, getCurrentActiveEvent } from '../../utils/schedule-logic';
 import { ROLES } from '../../data/rdo-data';

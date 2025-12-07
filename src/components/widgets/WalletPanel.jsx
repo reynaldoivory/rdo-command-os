@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { User, Star, Zap, DollarSign, Coins, Award, Edit2, Check, X } from 'lucide-react';
-import { useProfile } from '../../context/ProfileContext';
+import { useProfile } from '../../context';
 
 export const WalletPanel = () => {
     const { profile, setProfile, level } = useProfile();

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ItemImage } from '../common/ItemImage';
-import { useProfile } from '../../context/ProfileContext';
+import { useProfile } from '../../context';
 import { FiltersPanel } from '../FiltersPanel';
 import { CartPanel } from './CartPanel';
 import { ShoppingCart, Package, Lock } from 'lucide-react';

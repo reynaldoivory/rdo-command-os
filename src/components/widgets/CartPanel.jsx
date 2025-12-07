@@ -1,6 +1,6 @@
 import React from 'react';
 import { ShoppingCart } from 'lucide-react';
-import { useProfile } from '../../context/ProfileContext';
+import { useProfile } from '../../context';
 
 export const CartPanel = () => {
     const { cart, remaining } = useProfile();
