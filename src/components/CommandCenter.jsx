@@ -32,34 +32,34 @@ const ICON_MAP = {
 // ═══════════════════════════════════════════════════════════════════════════
 const PRIORITY_STYLES = {
     critical: {
-        border: 'border-red-500',
-        borderLeft: 'border-l-red-500',
+        border: 'border-b-2 border-red-500/30',
+        borderLeft: 'border-l-4 border-red-500',
         bg: 'from-red-950/40 to-black',
-        badge: 'bg-red-500/20 text-red-400 border-red-500/50',
+        badge: 'bg-red-500/10 text-red-400',
         iconParams: { color: 'text-red-500', animate: 'animate-bounce' },
         label: 'CRITICAL'
     },
     high: {
-        border: 'border-amber-500',
-        borderLeft: 'border-l-amber-500',
+        border: 'border-b-2 border-red-500/30',
+        borderLeft: 'border-l-4 border-red-500',
         bg: 'from-amber-950/40 to-black',
-        badge: 'bg-amber-500/20 text-amber-400 border-amber-500/50',
+        badge: 'bg-red-500/10 text-red-400',
         iconParams: { color: 'text-amber-500', animate: 'animate-pulse' },
         label: 'RECOMMENDED'
     },
     medium: {
-        border: 'border-blue-500',
-        borderLeft: 'border-l-blue-500',
+        border: 'border-b-2 border-amber-500/30',
+        borderLeft: 'border-l-4 border-amber-500',
         bg: 'from-blue-950/40 to-black',
-        badge: 'bg-blue-500/20 text-blue-400 border-blue-500/50',
+        badge: 'bg-amber-500/10 text-amber-400',
         iconParams: { color: 'text-blue-400', animate: '' },
         label: 'OPPORTUNITY'
     },
     low: {
-        border: 'border-gray-700',
-        borderLeft: 'border-l-gray-700',
+        border: 'border-b-2 border-emerald-500/30',
+        borderLeft: 'border-l-4 border-emerald-500',
         bg: 'from-gray-900/40 to-black',
-        badge: 'bg-gray-800 text-gray-400 border-gray-700',
+        badge: 'bg-emerald-500/10 text-emerald-400',
         iconParams: { color: 'text-gray-500', animate: '' },
         label: 'OPTIONAL'
     }
@@ -89,7 +89,7 @@ export const CommandCenter = () => {
 
     return (
         <div
-            className={`relative overflow-hidden rounded-xl border-l-4 ${styles.borderLeft} border-b-2 border-b-rdo-gold bg-gradient-to-r ${styles.bg} shadow-2xl mb-6 group transition-all duration-500`}
+            className={`relative overflow-hidden rounded-xl ${styles.borderLeft} border-b-2 border-b-rdo-gold bg-gradient-to-r ${styles.bg} shadow-2xl mb-6 group transition-all duration-500`}
             data-testid="command-center"
         >
             {/* Background Texture */}
