@@ -18,7 +18,7 @@ export const safeGetNumber = (obj, path, fallback = 0) => {
     const val = path
         .split('.')
         .reduce((acc, part) => (acc && acc[part] !== undefined ? acc[part] : undefined), obj);
-    const num = typeof val === 'number' ? val : parseFloat(val);
+    const num = typeof val === 'number' ? val : Number.parseFloat(val);
     return Number.isFinite(num) ? num : fallback;
 };
 
@@ -49,6 +49,7 @@ export const hasTrader = (profile) => getTraderLevel(profile) > 0;
 export const hasBounty = (profile) => getBountyLevel(profile) > 0;
 export const hasCollector = (profile) => getCollectorLevel(profile) > 0;
 export const hasMoonshiner = (profile) => getMoonshinerLevel(profile) > 0;
+export const hasNaturalist = (profile) => getNaturalistLevel(profile) > 0;
 export const hasAnyRole = (profile) => {
     const roles = profile?.roles || {};
     return Object.values(roles).some(xp => xp > 0);

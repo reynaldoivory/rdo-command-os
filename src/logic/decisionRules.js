@@ -141,6 +141,20 @@ export const VECTORS = {
         category: 'DAILIES',
         baseYield: '~0.2-0.5 GB',
         description: 'Complete daily challenges'
+    },
+    NATURALIST_UNLOCK: {
+        id: 'naturalist_unlock',
+        icon: 'Leaf',
+        category: 'NATURALIST',
+        baseYield: 'New Role',
+        description: 'Purchase Naturalist Sample Kit'
+    },
+    NATURALIST_FARM: {
+        id: 'naturalist_farm',
+        icon: 'Leaf',
+        category: 'NATURALIST',
+        baseYield: 'Gold Farm',
+        description: 'Farm gold to unlock Naturalist'
     }
 };
 
