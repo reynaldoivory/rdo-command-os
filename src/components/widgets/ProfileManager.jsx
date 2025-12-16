@@ -2,6 +2,7 @@
 // Multi-Tenancy Profile System - Switch between character saves
 import React, { useState, useRef } from 'react';
 import { Users, Plus, RotateCcw, Copy } from 'lucide-react';
+import { STORAGE_KEYS } from '../../constants/storage';
 
 export const ProfileManager = ({ currentProfileId, setProfileId, onReset, onClone }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -28,9 +29,10 @@ export const ProfileManager = ({ currentProfileId, setProfileId, onReset, onClon
   };
   // Get list of profiles from localStorage
   const getSavedProfiles = () => {
+    const prefix = STORAGE_KEYS.PROFILE('');
     const profiles = Object.keys(localStorage)
-      .filter(k => k.startsWith('rdo_os_profile_'))
-      .map(k => k.replace('rdo_os_profile_', ''));
+      .filter(k => k.startsWith(prefix))
+      .map(k => k.replace(prefix, ''));
     return profiles.length > 0 ? profiles : ['Main'];
   };
 
@@ -52,8 +54,8 @@ export const ProfileManager = ({ currentProfileId, setProfileId, onReset, onClon
   const handleDelete = (id) => {
     if (id === currentProfileId) return; // Can't delete active profile
     if (window.confirm(`Delete profile "${id}"? This cannot be undone.`)) {
-      localStorage.removeItem(`rdo_os_profile_${id}`);
-      localStorage.removeItem(`rdo_os_cart_${id}`);
+      localStorage.removeItem(STORAGE_KEYS.PROFILE(id));
+      localStorage.removeItem(STORAGE_KEYS.CART(id));
       setIsExpanded(false);
     }
   };

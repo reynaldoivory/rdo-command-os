@@ -7,6 +7,9 @@ import './index.css';
 // CONTEXT - Stage 2 State Management
 import { ProfileProvider } from './context';
 
+// CONSTANTS
+import { STORAGE_KEYS } from './constants/storage';
+
 // DATA & UTIL HOOKS
 import { useLayoutConfig } from './hooks/useLayoutConfig';
 
@@ -76,24 +79,24 @@ const Dashboard = () => {
 };
 
 export default function App() {
-  const [currentProfileId, setCurrentProfileId] = useState(() => localStorage.getItem('rdo_active_slot') || 'Main');
+  const [currentProfileId, setCurrentProfileId] = useState(() => localStorage.getItem(STORAGE_KEYS.ACTIVE_SLOT) || 'Main');
 
   const handleSwitchProfile = (id) => {
-    localStorage.setItem('rdo_active_slot', id);
+    localStorage.setItem(STORAGE_KEYS.ACTIVE_SLOT, id);
     setCurrentProfileId(id);
   };
 
   const handleCloneProfile = (newId) => {
-    const currentData = localStorage.getItem(`rdo_os_profile_${currentProfileId}`);
-    const currentCart = localStorage.getItem(`rdo_os_cart_${currentProfileId}`);
-    if (currentData) localStorage.setItem(`rdo_os_profile_${newId}`, currentData);
-    if (currentCart) localStorage.setItem(`rdo_os_cart_${newId}`, currentCart);
+    const currentData = localStorage.getItem(STORAGE_KEYS.PROFILE(currentProfileId));
+    const currentCart = localStorage.getItem(STORAGE_KEYS.CART(currentProfileId));
+    if (currentData) localStorage.setItem(STORAGE_KEYS.PROFILE(newId), currentData);
+    if (currentCart) localStorage.setItem(STORAGE_KEYS.CART(newId), currentCart);
     handleSwitchProfile(newId);
   };
 
   const handleResetProfile = () => {
-    localStorage.removeItem(`rdo_os_profile_${currentProfileId}`);
-    localStorage.removeItem(`rdo_os_cart_${currentProfileId}`);
+    localStorage.removeItem(STORAGE_KEYS.PROFILE(currentProfileId));
+    localStorage.removeItem(STORAGE_KEYS.CART(currentProfileId));
     const tempKey = `__reset_${Date.now()}`;
     setCurrentProfileId(tempKey);
     setTimeout(() => setCurrentProfileId(currentProfileId), 0);
