@@ -8,7 +8,7 @@ import React from 'react';
 import { useProfile } from '../context';
 import {
     Truck, Target, Map, Beaker, TrendingUp, Crown, Star, Compass,
-    AlertTriangle, Shield, ArrowRight, Calendar, Crosshair
+    AlertTriangle, Shield, ArrowRight, Calendar, Crosshair, Leaf
 } from 'lucide-react';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -24,7 +24,8 @@ const ICON_MAP = {
     Star: Star,
     Compass: Compass,
     Calendar: Calendar,
-    Crosshair: Crosshair
+    Crosshair: Crosshair,
+    Leaf: Leaf
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
