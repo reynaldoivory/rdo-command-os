@@ -5,8 +5,10 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 import { useState, useCallback } from 'react';
+import { validateLayoutConfig, sanitizeLayoutConfig, safeJsonParse, safeSetItem } from '../utils/security';
 
 const STORAGE_KEY = 'rdo_layout_config';
+const MAX_CONFIG_SIZE = 1024; // 1KB max
 
 // Default section order
 const DEFAULT_LEFT_SECTIONS = [
@@ -40,17 +42,30 @@ export function useLayoutConfig() {
     const [config, setConfig] = useState(() => {
         try {
             const stored = localStorage.getItem(STORAGE_KEY);
-            if (stored) {
-                const parsed = JSON.parse(stored);
-                // Validate structure
-                if (parsed.left && parsed.right) {
-                    return parsed;
-                }
+            if (!stored) {
+                return { left: DEFAULT_LEFT_SECTIONS, right: DEFAULT_RIGHT_SECTIONS };
             }
-        } catch {
-            // Invalid stored data
+            
+            // Security: Validate size and parse safely
+            const parsed = safeJsonParse(stored, MAX_CONFIG_SIZE);
+            if (!parsed) {
+                console.warn('[Security] Invalid layout config, using defaults');
+                return { left: DEFAULT_LEFT_SECTIONS, right: DEFAULT_RIGHT_SECTIONS };
+            }
+            
+            // Security: Validate and sanitize structure
+            const sanitized = sanitizeLayoutConfig(parsed);
+            if (sanitized) {
+                return sanitized;
+            }
+            
+            // Fallback to defaults if validation fails
+            console.warn('[Security] Layout config failed validation, using defaults');
+            return { left: DEFAULT_LEFT_SECTIONS, right: DEFAULT_RIGHT_SECTIONS };
+        } catch (error) {
+            console.error('[Security] Error loading layout config:', error);
+            return { left: DEFAULT_LEFT_SECTIONS, right: DEFAULT_RIGHT_SECTIONS };
         }
-        return { left: DEFAULT_LEFT_SECTIONS, right: DEFAULT_RIGHT_SECTIONS };
     });
 
     /**
@@ -68,8 +83,13 @@ export function useLayoutConfig() {
                 const [removed] = sections.splice(fromIndex, 1);
                 sections.splice(toIndex, 0, removed);
                 const newConfig = { ...prev, [fromColumn]: sections };
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(newConfig));
-                return newConfig;
+                // Security: Validate before saving
+                const sanitized = sanitizeLayoutConfig(newConfig);
+                if (sanitized) {
+                    safeSetItem(STORAGE_KEY, JSON.stringify(sanitized));
+                    return sanitized;
+                }
+                return prev; // Don't update if validation fails
             }
 
             // Cross-column move
@@ -83,8 +103,13 @@ export function useLayoutConfig() {
                 [fromColumn]: fromSections,
                 [toColumn]: toSections
             };
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(newConfig));
-            return newConfig;
+            // Security: Validate before saving
+            const sanitized = sanitizeLayoutConfig(newConfig);
+            if (sanitized) {
+                safeSetItem(STORAGE_KEY, JSON.stringify(sanitized));
+                return sanitized;
+            }
+            return prev; // Don't update if validation fails
         });
     }, []);
 
@@ -93,8 +118,12 @@ export function useLayoutConfig() {
      */
     const resetLayout = useCallback(() => {
         const defaultConfig = { left: DEFAULT_LEFT_SECTIONS, right: DEFAULT_RIGHT_SECTIONS };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultConfig));
-        setConfig(defaultConfig);
+        // Security: Validate defaults before saving
+        const sanitized = sanitizeLayoutConfig(defaultConfig);
+        if (sanitized) {
+            safeSetItem(STORAGE_KEY, JSON.stringify(sanitized));
+            setConfig(sanitized);
+        }
     }, []);
 
     /**

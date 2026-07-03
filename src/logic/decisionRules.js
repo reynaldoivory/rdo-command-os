@@ -42,9 +42,10 @@ export const PHASES = {
  * All monetary values in their respective currencies
  */
 export const THRESHOLDS = {
-    // Gold thresholds (Dev 1 values - more realistic for role purchases)
+    // Gold thresholds (Updated Dec 2025 - Outlaw Pass is dead)
     GOLD_CRITICAL: 15,     // Below this: force gold farming
-    GOLD_SAFE: 40,         // Above this: can spend freely
+    GOLD_LEGACY_BUFFER: 20, // Buffer for legacy item drops (re-released passes cost 15-20 GB)
+    GOLD_SAFE: 20,         // Above this: can spend freely (legacy items only, not new passes)
 
     // Cash thresholds
     CASH_POOR: 500,        // Below this: force cash farming

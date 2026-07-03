@@ -1,6 +1,7 @@
 // FILE: src/components/PanelsRegistry.jsx
 // Simple static registry mapping sectionId -> React component
 import React from 'react';
+import { validatePanelId } from '../utils/security';
 import { MissionControl } from './widgets/MissionControl';
 import { WalletPanel } from './widgets/WalletPanel';
 // Also export widget alias for Registry consistency (widgets/WalletWidget)
@@ -23,6 +24,7 @@ import { FilterBar } from './widgets/FilterBar';
 import { FiltersPanel } from './FiltersPanel';
 import { CartPanel } from './widgets/CartPanel';
 import { DiagnosticsPanel } from './widgets/DiagnosticsPanel';
+import { SessionAnalytics } from './widgets/SessionAnalytics';
 
 export const PanelsRegistry = {
     mission: MissionControl,
@@ -44,6 +46,7 @@ export const PanelsRegistry = {
     catalog: CatalogGrid || ShopColumn,
     filters: FilterBar || FiltersPanel,
     cart: CartPanel,
+    analytics: SessionAnalytics,
 
     // dev diagnostics
     diagnostics: DiagnosticsPanel,

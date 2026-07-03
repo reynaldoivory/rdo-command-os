@@ -10,6 +10,14 @@ import { useState, useEffect, useCallback } from 'react';
 const CACHE_KEY = 'rdo_specials_cache';
 const CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
 
+// Remote feed priority list (env override → community feeds → local)
+const DEFAULT_FEEDS = [
+    import.meta.env.VITE_SPECIALS_FEED,
+    'https://rdo.gg/api/events/weekly',
+    'https://jeanropke.github.io/RDR2CollectorsMap/data/events.json',
+    '/data/current_specials.json'
+].filter(Boolean);
+
 // Default fallback data (used when fetch fails and no cache exists)
 const FALLBACK_SPECIALS = {
     meta: {
@@ -32,15 +40,59 @@ const FALLBACK_SPECIALS = {
 };
 
 /**
+ * Try feeds in order; return normalized data on first success
+ */
+async function resolveSpecialsFromFeeds(feeds, forceRefresh, fetchWithTimeout, normalizeSpecials) {
+    let lastError = null;
+
+    for (const url of feeds) {
+        try {
+            const response = await fetchWithTimeout(url, {
+                cache: forceRefresh ? 'no-cache' : 'default'
+            });
+
+            if (!response.ok) {
+                lastError = new Error(`HTTP ${response.status}: ${response.statusText}`);
+                continue;
+            }
+
+            const raw = await response.json();
+            const data = normalizeSpecials(raw, url);
+
+            if (!data.bonuses || !data.meta) {
+                lastError = new Error('Invalid specials data structure');
+                continue;
+            }
+
+            if (data.meta.validUntil) {
+                const validUntil = new Date(data.meta.validUntil);
+                if (validUntil < new Date()) {
+                    console.warn('Specials data has expired, may be outdated');
+                }
+            }
+
+            return data;
+        } catch (err) {
+            lastError = err;
+        }
+    }
+
+    throw lastError || new Error('No specials feed available');
+}
+
+/**
  * Hook to fetch and cache weekly specials data
- * @param {string} feedUrl - URL to fetch specials JSON from
+ * @param {string|string[]} feedUrls - URL(s) to fetch specials JSON from (first success wins)
  * @returns {{ specials: object, loading: boolean, error: string|null, refresh: () => void, lastFetched: Date|null }}
  */
-export function useSpecials(feedUrl = '/data/current_specials.json') {
+export function useSpecials(feedUrls = DEFAULT_FEEDS) {
     const [specials, setSpecials] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [lastFetched, setLastFetched] = useState(null);
+
+    // Normalize feedUrls to an array
+    const feeds = Array.isArray(feedUrls) ? feedUrls : [feedUrls].filter(Boolean);
 
     /**
      * Check if cached data is still valid
@@ -84,6 +136,42 @@ export function useSpecials(feedUrl = '/data/current_specials.json') {
     }, []);
 
     /**
+     * Normalize remote data into app shape
+     */
+    const normalizeSpecials = useCallback((data, source) => {
+        const meta = data?.meta || {};
+        return {
+            weeklyTheme: data.weeklyTheme || data.theme || FALLBACK_SPECIALS.weeklyTheme,
+            bonuses: data.bonuses || data.events || [],
+            discounts: data.discounts || data.sales || [],
+            freeItems: data.freeItems || data.free || [],
+            limitedTime: data.limitedTime || data.limited || [],
+            podiumVehicle: data.podiumVehicle || null,
+            primeGaming: data.primeGaming || { active: false, rewards: [] },
+            meta: {
+                version: meta.version ?? data.version ?? 0,
+                lastUpdated: meta.lastUpdated ?? data.lastUpdated ?? null,
+                validUntil: meta.validUntil ?? data.validUntil ?? null,
+                source: meta.source ?? source ?? 'unknown'
+            }
+        };
+    }, []);
+
+    /**
+     * Fetch helper with timeout
+     */
+    const fetchWithTimeout = useCallback(async (url, options = {}, timeoutMs = 7000) => {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeoutMs);
+        try {
+            const res = await fetch(url, { ...options, signal: controller.signal });
+            return res;
+        } finally {
+            clearTimeout(id);
+        }
+    }, []);
+
+    /**
      * Fetch fresh data from remote
      */
     const fetchSpecials = useCallback(async (forceRefresh = false) => {
@@ -103,36 +191,13 @@ export function useSpecials(feedUrl = '/data/current_specials.json') {
 
         // Fetch from remote
         try {
-            const response = await fetch(feedUrl, {
-                cache: forceRefresh ? 'no-cache' : 'default'
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-
-            // Validate structure
-            if (!data.meta || !data.bonuses) {
-                throw new Error('Invalid specials data structure');
-            }
-
-            // Check if data is still valid (not expired)
-            if (data.meta.validUntil) {
-                const validUntil = new Date(data.meta.validUntil);
-                if (validUntil < new Date()) {
-                    console.warn('Specials data has expired, may be outdated');
-                }
-            }
-
-            // Cache and set
+            const data = await resolveSpecialsFromFeeds(feeds, forceRefresh, fetchWithTimeout, normalizeSpecials);
             setCachedData(data);
             setSpecials(data);
             setLastFetched(new Date());
         } catch (err) {
             console.error('Failed to fetch specials:', err);
-            setError(err.message);
+            setError(err?.message || 'Unknown error');
 
             // Try to use stale cache
             const staleCache = getCachedData();
@@ -146,7 +211,7 @@ export function useSpecials(feedUrl = '/data/current_specials.json') {
         } finally {
             setLoading(false);
         }
-    }, [feedUrl, getCachedData, setCachedData]);
+    }, [feeds, fetchWithTimeout, getCachedData, normalizeSpecials, setCachedData]);
 
     /**
      * Force refresh (bypass cache)

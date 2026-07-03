@@ -20,8 +20,8 @@ export function useProfile() {
  * useCart - Convenience hook for cart-only access
  */
 export function useCart() {
-    const { cart, cartTotals, remaining, addToCart, removeFromCart, toggleCartItem, clearCart } = useProfile();
-    return { cart, cartTotals, remaining, addToCart, removeFromCart, toggleCartItem, clearCart };
+    const { cart, cartTotals, remaining, addToCart, removeFromCart, toggleCartItem, clearCart, checkoutCart } = useProfile();
+    return { cart, cartTotals, remaining, addToCart, removeFromCart, toggleCartItem, clearCart, checkoutCart };
 }
 
 /**

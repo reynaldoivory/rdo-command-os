@@ -1,0 +1,65 @@
+{
+  "meta": {
+    "generated_date": "2025-12-03",
+    "status": "LIVE_OVERRIDE"
+  },
+  "user_profile": {
+    "character_name": "Chad Lance",
+    "rank": 47,
+    "roles": {
+      "trader": 20,
+      "bounty_hunter": 7,
+      "collector": 4,
+      "moonshiner": 4
+    },
+    "economy": {
+      "cash": 1466.00,
+      "gold": 9.20,
+      "tokens": 25
+    },
+    "loadout": {
+      "cards": ["Paint it Black III", "Iron Lung III", "Strange Medicine III", "Fool Me Once II"],
+      "weapons": ["Dual Navy Revolvers", "Bolt Action Rifle", "Pump Action"],
+      "horse": "Buckskin Mustang + Nacho Saddle",
+      "build": "Tank (Overweight)"
+    },
+    "facilities": {
+      "camp": "Bayou Nwa",
+      "moonshine_shack": "Bayou Nwa",
+      "current_location": "Saint Denis / Lagras"
+    },
+    "inventory": {
+      "tools": ["Pennington Field Shovel", "Reinforced Lasso"],
+      "missing_tools": ["Metal Detector"],
+      "collectibles": []
+    }
+  },
+  "game_state": {
+    "date": "2025-12-03",
+    "cycles": {
+      "tarot_cards": 5,
+      "coins": 6,
+      "jewelry": 1,
+      "fossils": 6,
+      "eggs": 3,
+      "flowers": 2
+    },
+    "nazar_location": { "id": "rio", "region": "Rio Bravo", "near": "Benedict Point" }
+  },
+  "weekly_set": {
+    "name": "The Foundation Collection",
+    "items": [
+      {"id": "provision_arrowhead_feldspar", "name": "Feldspar Arrowhead", "tool_needed": "Shovel"},
+      {"id": "provision_jewelry_dmnd_pendt_earring", "name": "Endicott Diamond Earring", "tool_needed": "Metal Detector"},
+      {"id": "provision_jewelry_coral_dngl_earring", "name": "Emmeline Coral Earring", "tool_needed": "Metal Detector"}
+    ],
+    "reward": 85.00
+  },
+  "core_route_targets": [
+      {"type": "Tarot", "item": "The Empress (Cups)", "location": "Saint Denis Docks", "xp": 12, "value": 1.50},
+      {"type": "Tarot", "item": "The Fool (Wands)", "location": "Lagras Pier", "xp": 12, "value": 1.50},
+      {"type": "Flower", "item": "Wild Rhubarb", "location": "Lagras Swamp", "xp": 12, "value": 1.50},
+      {"type": "Egg", "item": "Heron Egg", "location": "Bluewater Marsh", "xp": 12, "value": 1.75},
+      {"type": "Egg", "item": "Spoonbill Egg", "location": "Bayou Nwa South", "xp": 12, "value": 1.75}
+  ]
+}

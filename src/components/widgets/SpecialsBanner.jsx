@@ -34,6 +34,7 @@ export const SpecialsBanner = () => {
     const { specials, loading, error, refresh } = useSpecials();
     const { newItems, markAllSeen, hasNewItems } = useNewSpecials(specials);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     // Auto-mark seen when user expands the banner
     const handleExpand = () => {
@@ -42,6 +43,16 @@ export const SpecialsBanner = () => {
         if (willExpand && hasNewItems) {
             // Mark all as seen after a short delay (user has seen them)
             setTimeout(() => markAllSeen(), 2000);
+        }
+    };
+
+    const handleRefresh = async (e) => {
+        e?.stopPropagation?.();
+        setIsRefreshing(true);
+        try {
+            await refresh();
+        } finally {
+            setIsRefreshing(false);
         }
     };
 
@@ -70,6 +81,11 @@ export const SpecialsBanner = () => {
     }
 
     const timeRemaining = getTimeUntilExpiry(specials);
+    const lastUpdated = specials.meta?.lastUpdated
+        ? new Date(specials.meta.lastUpdated).toLocaleString()
+        : 'Unknown';
+    const sourceLabel = specials.meta?.source || 'Unknown';
+    const isExpired = timeRemaining === 'Expired';
     const hasBonuses = specials.bonuses?.length > 0;
     const hasDiscounts = specials.discounts?.length > 0;
     const hasFreeItems = specials.freeItems?.length > 0;
@@ -116,6 +132,26 @@ export const SpecialsBanner = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
+                    <div className="hidden md:flex flex-col items-end text-[10px] text-gray-500 leading-tight">
+                        <div className="flex items-center gap-2">
+                            <Clock size={10} />
+                            <span>Updated: {lastUpdated}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className={`uppercase ${isExpired ? 'text-red-400' : 'text-emerald-400'}`}>
+                                {isExpired ? 'Expired' : 'Live'}
+                            </span>
+                            <span className="text-gray-500">Source: {sourceLabel}</span>
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={handleRefresh}
+                        className="p-2 rounded-lg border border-white/10 text-gray-400 hover:text-white hover:border-white/30 transition flex items-center gap-1"
+                    >
+                        <RefreshCw size={16} className={isRefreshing ? 'animate-spin' : ''} />
+                        <span className="text-[11px] hidden sm:inline">Refresh</span>
+                    </button>
                     {/* Quick Bonus Pills */}
                     <div className="hidden sm:flex gap-2">
                         {specials.bonuses?.slice(0, 2).map((bonus) => {
@@ -281,11 +317,14 @@ export const SpecialsBanner = () => {
                         <div className="p-3 bg-gradient-to-r from-purple-900/30 to-blue-900/30 rounded-lg border border-purple-500/30">
                             <div className="text-purple-400 font-bold text-sm mb-1">Prime Gaming Rewards</div>
                             <div className="flex flex-wrap gap-2">
-                                {specials.primeGaming.rewards.map((reward, i) => (
-                                    <span key={i} className="text-xs text-gray-300 px-2 py-1 bg-black/30 rounded">
-                                        {reward}
-                                    </span>
-                                ))}
+                                {specials.primeGaming.rewards.map((reward, i) => {
+                                    const rewardKey = typeof reward === 'string' ? reward : reward?.id || `reward_${i}`;
+                                    return (
+                                        <span key={rewardKey} className="text-xs text-gray-300 px-2 py-1 bg-black/30 rounded">
+                                            {typeof reward === 'string' ? reward : reward?.label || rewardKey}
+                                        </span>
+                                    );
+                                })}
                             </div>
                         </div>
                     )}

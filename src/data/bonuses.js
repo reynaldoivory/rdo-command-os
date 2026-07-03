@@ -135,27 +135,46 @@ export const RDO_UPDATE_INFO = {
 
   // === DECEMBER 2025 EVENT (Dec 2 - Jan 6) ===
   // Source: reddit.com/r/RedDeadOnline/comments/1pboa58/monthly_discounts_and_bonuses_december_2nd_to/
+  // Updated: 2025-12-11 - Corrected active bonuses
   currentEvent: {
     name: 'Holiday 2025 / Naturalist Month',
     dateRange: 'December 2, 2025 - January 6, 2026',
-    lastUpdated: '2025-12-04',
+    lastUpdated: '2025-12-11',
     verified: true,
     
     bonuses: {
-      naturalistSampleSales: { multiplier: '3X', rewards: 'RDO$, Role XP' },
-      freeRoamEvents: { multiplier: '3X', rewards: 'RDO$, Ability Card XP, XP' },
-      merryCallToArms: { multiplier: '2X', rewards: 'RDO$, Gold, XP', newMap: 'Fort Wallace' },
-      headForTheHills: { multiplier: '2X', rewards: 'RDO$, Gold, XP', newMap: 'Ewing Basin (Dec 2-8)' },
+      naturalistSampleSales: { 
+        multiplier: '3X', 
+        rewards: 'RDO$, Role XP',
+        note: 'Primary money maker this month - sedate animals, sample without killing, sell to Harriet'
+      },
+      freeRoamEvents: { 
+        multiplier: '2X', 
+        rewards: 'RDO$, Gold, XP',
+        note: 'All Free Roam Events pay double rewards'
+      },
+      merryCallToArms: { 
+        multiplier: '2X', 
+        rewards: 'RDO$, Gold, XP', 
+        newMap: 'Fort Wallace',
+        note: 'Festive map - Survive 10 waves = ~$400 + 0.48g + 3000 XP at 2X rates'
+      },
     },
     
     discounts: {
-      free: ['Fast Travel', 'Sedative Ammo'],
-      goldOff: [{ item: 'Sample Kit', discount: '10 Gold Bars off' }],
-      fiftyPercent: ['Novice/Promising Naturalist Items', 'Trinkets', 'Varmint Rifle', 'Pistols', 'Pistol Customization'],
-      fortyPercent: ['Cripps Outfits', 'Arabian Horses', 'Mustang Horses', 'Hats', 'Coats', 'Chaps', 'Gloves'],
+      free: ['Sedative Ammo'],
+      goldOff: [{ item: 'Sample Kit', discount: '10 Gold Bars OFF' }],
+      fiftyPercent: ['All Naturalist Role Items'],
+    },
+    
+    weeklyReward: {
+      week: 'Dec 9-15, 2025',
+      challenge: 'Hunt a Legendary Animal',
+      note: 'Stacks with Naturalist sample bonuses and Harriet missions'
     },
     
     freeItems: [
+      { item: 'Free Sedative Ammo', condition: 'All month (Dec 2 - Jan 6)' },
       { item: 'Winter Evans Repeater Variant', condition: 'Login Dec 2 - Jan 5' },
       { item: 'Redcliff Outfit (Quick Draw Pass 1)', condition: 'Login Dec 23-31' },
       { item: 'Free Emote + Honor Reset + Weight Loss Tonic', condition: 'Login Jan 1-5' },
@@ -164,6 +183,12 @@ export const RDO_UPDATE_INFO = {
       { item: 'Prowler Hat (Outlaw Pass 1)', condition: 'Sample a Legendary Animal' },
       { item: 'Red Morning Tail Coat', condition: 'Reach Wave 4 in A Merry Call to Arms' },
       { item: 'Krampus Shotgun Variant', condition: 'Returns Dec 9 (rank lock lifted)' },
+    ],
+    
+    expiredEvents: [
+      { event: 'Turkey 10X', ended: 'December 1st' },
+      { event: 'Trade Route 3X', ended: 'November only' },
+      { event: 'Trader 2X Sales', ended: 'December 1st' },
     ],
   },
 

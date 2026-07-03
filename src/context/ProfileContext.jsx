@@ -5,6 +5,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 import React, { useMemo, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { analyzeProfile, explainAnalysis } from '../logic/nextBestAction';
 import { CATALOG, UI_CONFIG } from '../data/rdo-data';
 import { usePersistentState } from '../hooks/usePersistentState';
@@ -92,6 +93,36 @@ export function ProfileProvider({ profileId, children }) {
         }));
     }, [setProfile]);
 
+    const checkoutCart = useCallback(() => {
+        const insufficientCash = cartTotals.cash > profile.cash;
+        const insufficientGold = cartTotals.gold > profile.gold;
+
+        if (insufficientCash || insufficientGold) {
+            return {
+                ok: false,
+                reason: 'INSUFFICIENT_FUNDS',
+                details: {
+                    requiredCash: cartTotals.cash,
+                    requiredGold: cartTotals.gold,
+                    availableCash: profile.cash,
+                    availableGold: profile.gold
+                }
+            };
+        }
+
+        setProfile(prev => ({
+            ...prev,
+            cash: prev.cash - cartTotals.cash,
+            gold: prev.gold - cartTotals.gold
+        }));
+        setCart([]);
+
+        return {
+            ok: true,
+            spent: { cash: cartTotals.cash, gold: cartTotals.gold }
+        };
+    }, [cartTotals.cash, cartTotals.gold, profile.cash, profile.gold, setCart, setProfile]);
+
     // Context value - memoized to prevent unnecessary re-renders
     const value = useMemo(() => ({
         // State
@@ -109,6 +140,7 @@ export function ProfileProvider({ profileId, children }) {
         updateProfile,
         updateRole,
         travel,
+        checkoutCart,
 
         // Cart actions
         setCart,
@@ -156,4 +188,9 @@ export function ProfileProvider({ profileId, children }) {
         </ProfileContext.Provider>
     );
 }
+
+ProfileProvider.propTypes = {
+    profileId: PropTypes.string.isRequired,
+    children: PropTypes.node.isRequired
+};
 

@@ -12,13 +12,22 @@ import { useProfile } from '../context';
  */
 export const EfficiencyEngine = () => {
   // Fetch weekly specials for discount integration
-  const { specials } = useSpecials();
+  const { specials, lastFetched, error: specialsError } = useSpecials();
   const { profile, cart, CATALOG } = useProfile();
 
   const analysis = useMemo(
     () => analyzeEfficiency(profile, CATALOG, cart, specials),
     [profile, CATALOG, cart, specials]
   );
+
+  // Specials freshness checks
+  const validUntil = specials?.meta?.validUntil ? new Date(specials.meta.validUntil) : null;
+  const lastUpdate = specials?.meta?.lastUpdated ? new Date(specials.meta.lastUpdated) : null;
+  const lastFetchedTs = lastFetched instanceof Date ? lastFetched : null;
+  const now = Date.now();
+  const isExpired = validUntil ? validUntil.getTime() < now : false;
+  const isStaleFetch = lastFetchedTs ? (now - lastFetchedTs.getTime()) > 24 * 60 * 60 * 1000 : false;
+  const specialsSource = specials?.meta?.source || 'Unknown';
 
   // Icon and color mapping for recommendation types
   const typeConfig = {
@@ -57,6 +66,20 @@ export const EfficiencyEngine = () => {
     'CASH + GOLD': 'text-red-500',
   };
 
+  const efficiencyColor = (() => {
+    const val = analysis.metrics.efficiency;
+    if (val >= 80) return 'text-green-400';
+    if (val >= 50) return 'text-amber-400';
+    return 'text-red-400';
+  })();
+
+  const efficiencyBar = (() => {
+    const val = analysis.metrics.efficiency;
+    if (val >= 80) return 'bg-gradient-to-r from-green-600 to-green-400';
+    if (val >= 50) return 'bg-gradient-to-r from-amber-600 to-amber-400';
+    return 'bg-gradient-to-r from-red-600 to-red-400';
+  })();
+
   return (
     <div className="card-rdo rounded-xl p-6 mb-6 relative overflow-hidden">
       {/* Subtle shimmer effect for premium feel */}
@@ -76,22 +99,51 @@ export const EfficiencyEngine = () => {
         </div>
       </div>
 
+      {/* Specials freshness / blockers */}
+      {(isExpired || isStaleFetch || specialsError) && (
+        <div className="relative z-10 mb-4 p-3 rounded-lg border border-amber-500/30 bg-amber-900/20 text-xs text-amber-200 flex items-start gap-2">
+          <AlertTriangle size={14} className="mt-0.5 flex-shrink-0 text-amber-400" />
+          <div>
+            <div className="font-bold text-amber-300">Live data warning</div>
+            <div>
+              {isExpired ? 'Specials data is past validUntil; values may be outdated. ' : ''}
+              {isStaleFetch ? 'Local cache is older than 24h; refresh recommended. ' : ''}
+              {specialsError ? `Feed error: ${specialsError}` : ''}
+            </div>
+            <div className="text-[10px] text-amber-200/70">
+              Source: {specialsSource} • Last updated: {lastUpdate ? lastUpdate.toLocaleString() : 'Unknown'}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cart blockers */}
+      {(analysis.remaining.cash < 0 || analysis.remaining.gold < 0) && (
+        <div className="relative z-10 mb-3 p-3 rounded-lg border border-red-500/40 bg-red-900/20 text-xs text-red-200 flex items-start gap-2">
+          <AlertCircle size={14} className="mt-0.5 flex-shrink-0 text-red-300" />
+          <div>
+            <div className="font-bold text-red-200">Checkout blocked</div>
+            {analysis.remaining.cash < 0 && (
+              <div>Cash shortfall: ${Math.abs(analysis.remaining.cash).toFixed(2)}.</div>
+            )}
+            {analysis.remaining.gold < 0 && (
+              <div>Gold shortfall: {Math.abs(analysis.remaining.gold).toFixed(2)} GB.</div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Efficiency Score Bar */}
       <div className="relative z-10 mb-4">
         <div className="flex justify-between items-center mb-1">
           <span className="text-[10px] text-gray-500 uppercase tracking-widest">System Efficiency</span>
-          <span className={`font-mono font-bold text-sm ${analysis.metrics.efficiency >= 80 ? 'text-green-400' :
-            analysis.metrics.efficiency >= 50 ? 'text-amber-400' : 'text-red-400'
-            }`}>
+          <span className={`font-mono font-bold text-sm ${efficiencyColor}`}>
             {analysis.metrics.efficiency}%
           </span>
         </div>
         <div className="h-2 bg-black/50 rounded-full overflow-hidden border border-white/5">
           <div
-            className={`h-full transition-all duration-500 ${analysis.metrics.efficiency >= 80 ? 'bg-gradient-to-r from-green-600 to-green-400' :
-              analysis.metrics.efficiency >= 50 ? 'bg-gradient-to-r from-amber-600 to-amber-400' :
-                'bg-gradient-to-r from-red-600 to-red-400'
-              }`}
+            className={`h-full transition-all duration-500 ${efficiencyBar}`}
             style={{ width: `${analysis.metrics.efficiency}%` }}
           />
         </div>
@@ -121,10 +173,11 @@ export const EfficiencyEngine = () => {
           analysis.recommendations.slice(0, 3).map((rec, idx) => {
             const config = typeConfig[rec.type] || typeConfig.info;
             const Icon = config.icon;
+            const recKey = rec.id || `${rec.title}-${idx}`;
 
             return (
               <div
-                key={idx}
+                key={recKey}
                 className={`${config.bg} border-l-2 ${config.accent} pl-3 py-2 rounded-r-lg animate-fade-in-up`}
                 style={{ animationDelay: `${idx * 100}ms` }}
               >

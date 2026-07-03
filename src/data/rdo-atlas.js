@@ -156,6 +156,60 @@ export const POINTS_OF_INTEREST = [
     },
 
     // ═══════════════════════════════════════════════════════════════════════════
+    // MOONSHINE INGREDIENTS (Flavoring Locations)
+    // ═══════════════════════════════════════════════════════════════════════════
+    {
+        id: 'berry_raspberry_ambarino',
+        name: 'Raspberry Patch (Ambarino)',
+        type: 'ingredient',
+        x: 5, y: 45,
+        region: 'Ambarino',
+        desc: 'Dense raspberry bushes near Cumberland Forest. Best spawn rate.',
+        yield: 'Moonshine Flavoring',
+        tier: 'meta'
+    },
+    {
+        id: 'berry_raspberry_grizzlies',
+        name: 'Raspberry Patch (Grizzlies)',
+        type: 'ingredient',
+        x: 15, y: 50,
+        region: 'Grizzlies West',
+        desc: 'Mountain raspberries. Reliable spawn near Brandywine Drop.',
+        yield: 'Moonshine Flavoring',
+        tier: 'efficient'
+    },
+    {
+        id: 'berry_raspberry_bigvalley',
+        name: 'Raspberry Patch (Big Valley)',
+        type: 'ingredient',
+        x: -50, y: 5,
+        region: 'Big Valley',
+        desc: 'Raspberries along Little Creek River. Easy access from Strawberry.',
+        yield: 'Moonshine Flavoring',
+        tier: 'efficient'
+    },
+    {
+        id: 'berry_raspberry_roanoke',
+        name: 'Raspberry Patch (Roanoke)',
+        type: 'ingredient',
+        x: 55, y: 25,
+        region: 'Roanoke Ridge',
+        desc: 'Raspberry bushes near Brandywine Drop waterfall. Scenic route.',
+        yield: 'Moonshine Flavoring',
+        tier: 'standard'
+    },
+    {
+        id: 'berry_raspberry_heartlands',
+        name: 'Raspberry Patch (Heartlands)',
+        type: 'ingredient',
+        x: 20, y: -5,
+        region: 'The Heartlands',
+        desc: 'Sparse spawns. Use only if other locations unavailable.',
+        yield: 'Moonshine Flavoring',
+        tier: 'utility'
+    },
+
+    // ═══════════════════════════════════════════════════════════════════════════
     // TRADER CAMP LOCATIONS (Meta Spots)
     // ═══════════════════════════════════════════════════════════════════════════
     {
@@ -277,6 +331,7 @@ export const POI_TYPES = {
     bounty: { label: 'Bounty', icon: 'Crosshair', color: 'text-red-500', bg: 'bg-red-500' },
     hunt: { label: 'Hunting', icon: 'Target', color: 'text-amber-500', bg: 'bg-amber-500' },
     shack: { label: 'Moonshine', icon: 'Wine', color: 'text-cyan-400', bg: 'bg-cyan-500' },
+    ingredient: { label: 'Moonshine Ingredient', icon: 'Leaf', color: 'text-pink-400', bg: 'bg-pink-500' },
     camp: { label: 'Camp', icon: 'Tent', color: 'text-green-500', bg: 'bg-green-500' },
     shop: { label: 'Shop', icon: 'Store', color: 'text-violet-400', bg: 'bg-violet-500' },
     collect: { label: 'Collector', icon: 'Search', color: 'text-yellow-400', bg: 'bg-yellow-500' },

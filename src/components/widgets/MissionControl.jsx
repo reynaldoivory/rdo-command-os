@@ -14,6 +14,7 @@ import { useProfile } from '../../context';
 import { useDailies } from '../../hooks/useDailies';
 import { getNextEvent, getCurrentActiveEvent } from '../../utils/schedule-logic';
 import { ROLES } from '../../data/rdo-data';
+import { PAYOUTS, CYCLES, HARRIET_MISSIONS, getBestHarrietMission, BLOOD_MONEY_OPPORTUNITIES, CAPITALE_WARNINGS } from '../../constants/gameData';
 
 // Action type metadata
 const ACTION_TYPES = {
@@ -67,9 +68,105 @@ const URGENCY_STYLES = {
 
 /**
  * Analyze current game state and return prioritized actions
+ * INFINITE HORIZON PROTOCOL: Cash crunch detection + optimized cycle management
  */
 function analyzeOptimalActions(profile, dailies, nextEvent, activeEvent) {
     const actions = [];
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // PRIORITY 0: INFINITE HORIZON - LIQUIDITY CRISIS CHECK
+    // ═══════════════════════════════════════════════════════════════════════
+    // If cash is below Moonshine cost + Ammo buffer ($150), force Cash Injection
+    if (profile.cash < 150) {
+        actions.push({
+            priority: -1, // Highest priority (negative = before all others)
+            type: 'cash',
+            title: 'LIQUIDITY CRISIS',
+            description: 'Cash below $150. Launch Legendary Bounty: Etta Doyle immediately.',
+            urgency: 'critical',
+            reward: `$${PAYOUTS.ETTA_DOYLE_30_MIN.cash} + ${PAYOUTS.ETTA_DOYLE_30_MIN.gold} Gold`,
+            action: 'Hide in tunnel. Wait 12 mins. Payout: $225 + 0.48 Gold.'
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // PRIORITY -0.5: CAPITALE BURN RECOVERY PROTOCOL
+    // ═══════════════════════════════════════════════════════════════════════
+    // If Capitale > 25, force recovery mission to convert to cash/gold
+    const capitale = profile.capitale || 0;
+    if (capitale >= CAPITALE_WARNINGS.HIGH_CAPITALE_THRESHOLD) {
+        const recoveryMission = BLOOD_MONEY_OPPORTUNITIES.COVINGTON_EMERALD;
+        const runsPossible = Math.floor(capitale / recoveryMission.capitaleCost);
+        
+        actions.push({
+            priority: -0.5, // Second highest priority (after liquidity crisis)
+            type: 'cash',
+            title: 'CAPITALE BURN RECOVERY',
+            description: `${capitale} Capitale detected. Convert to cash/gold immediately via Covington Emerald.`,
+            urgency: 'critical',
+            reward: `${runsPossible}x runs: ${recoveryMission.payout.gold * runsPossible} Gold + $${recoveryMission.payout.cash * runsPossible} Cash`,
+            action: `Fast Travel to Saint Denis → Anthony Foreman → Launch "Covington Emerald (Ruthless)" → Wait 30 min total time → Turn in. Can run ${runsPossible}x times.`
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // PRIORITY 0.5: INFINITE HORIZON - TRADER MATERIALS CHECK (MPM Optimized)
+    // ═══════════════════════════════════════════════════════════════════════
+    // Check trader materials (using goodsPercent as proxy: 0-100%)
+    const traderMaterials = profile.traderState?.materials ?? 0;
+    const traderGoodsPercent = profile.traderState?.goodsPercent ?? 0;
+    
+    // If materials are low (< 25 goods worth) and trader role is unlocked
+    if (profile.roles.trader > 0 && traderMaterials < 25 && traderGoodsPercent < 25) {
+        // Get best Harriet mission by MPM (Materials Per Minute)
+        const bestMission = getBestHarrietMission();
+        
+        if (bestMission) {
+            // Check if Golden Spirit Bear is available (always prioritize)
+            const bearMission = HARRIET_MISSIONS.GOLDEN_SPIRIT_BEAR;
+            const mission = bearMission || bestMission;
+            
+            actions.push({
+                priority: 0,
+                type: 'role',
+                title: 'MATERIELS CRITICAL',
+                description: `Trader materials below 25. Launch: ${mission.name} (${mission.mpm.toFixed(2)} MPM).`,
+                urgency: 'high',
+                reward: `+${mission.materials.toFixed(2)} Materials (${mission.timeMinutes} min)`,
+                action: mission.strategy || `Fast Travel to Lagras → Launch Mission → Kill/Skin → Donate to Cripps.`
+            });
+        } else {
+            // Fallback to Inahme Elk if mission data unavailable
+            actions.push({
+                priority: 0,
+                type: 'role',
+                title: 'MATERIELS CRITICAL',
+                description: 'Trader materials below 25. Launch Mission: Inahme Elk.',
+                urgency: 'high',
+                reward: `+${PAYOUTS.INAHME_ELK_MATERIALS} Materials`,
+                action: 'Fast Travel to Lagras. Kill & Skin. Donate to Cripps (+41.16 Mats).'
+            });
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // PRIORITY 0.6: INFINITE HORIZON - MOONSHINE CYCLE CHECK
+    // ═══════════════════════════════════════════════════════════════════════
+    // Check if moonshine batch is ready (48-minute cycle)
+    if (profile.roles.moonshiner > 0 && profile.timers?.moonshineStart) {
+        const timeSinceBatch = (Date.now() - profile.timers.moonshineStart) / 60000;
+        if (timeSinceBatch >= CYCLES.MOONSHINE_BATCH_MINUTES) {
+            actions.push({
+                priority: 0.5,
+                type: 'cash',
+                title: 'BATCH READY',
+                description: 'Moonshine batch complete. Deliver to maximize profit.',
+                urgency: 'high',
+                reward: `$${PAYOUTS.MOONSHINE_STRONG_BERRY} - $450`,
+                action: 'Short delivery to St. Denis/Rhodes. Payout: $226 - $450.'
+            });
+        }
+    }
 
     // ═══════════════════════════════════════════════════════════════════════
     // PRIORITY 1: Active God-Tier Event (DROP EVERYTHING)
@@ -89,7 +186,7 @@ function analyzeOptimalActions(profile, dailies, nextEvent, activeEvent) {
     // ═══════════════════════════════════════════════════════════════════════
     // PRIORITY 2: Upcoming God-Tier Event (< 10 mins)
     // ═══════════════════════════════════════════════════════════════════════
-    if (nextEvent.value === 'god_tier' && nextEvent.minsRemaining <= 10 && !activeEvent) {
+    if (nextEvent && nextEvent.value === 'god_tier' && nextEvent.minsRemaining <= 10 && !activeEvent) {
         actions.push({
             priority: 1,
             type: 'event',
@@ -104,9 +201,9 @@ function analyzeOptimalActions(profile, dailies, nextEvent, activeEvent) {
     // ═══════════════════════════════════════════════════════════════════════
     // PRIORITY 3: Role Unlock (No roles = get Bounty Hunter first)
     // ═══════════════════════════════════════════════════════════════════════
-    const roleXPs = Object.values(profile.roles);
+    const roleXPs = Object.values(profile.roles || {});
     const hasAnyRole = roleXPs.some(xp => xp > 0);
-    const totalGold = profile.gold;
+    const totalGold = profile.gold || 0;
 
     if (!hasAnyRole) {
         if (totalGold >= 15) {
@@ -196,9 +293,10 @@ function analyzeOptimalActions(profile, dailies, nextEvent, activeEvent) {
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    // PRIORITY 6: Cash Farming (if low on cash)
+    // PRIORITY 6: Cash Farming (if low on cash, but not critical)
     // ═══════════════════════════════════════════════════════════════════════
-    if (profile.cash < 500) {
+    // Only suggest if not already in liquidity crisis (handled above)
+    if (profile.cash < 500 && profile.cash >= 150) {
         const hasTrader = profile.roles.trader > 0;
         const hasCollector = profile.roles.collector > 0;
 

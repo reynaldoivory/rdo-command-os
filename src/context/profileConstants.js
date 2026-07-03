@@ -8,6 +8,7 @@ export const DEFAULT_PROFILE = {
     cash: 0,
     gold: 0,
     tokens: 0,
+    capitale: 0, // Blood Money currency
     location: 'valentine',
     roles: {
         bountyHunter: 0,
