@@ -1,25 +1,25 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
- * RDO COMMAND - Unified Data Contract
+ * RDO COMMAND - Unified Schema & Validators
  * ═══════════════════════════════════════════════════════════════════════════
- * 
+ *
  * CRITICAL: This file must be PURE JavaScript.
  * - No React imports
  * - No Node-specific APIs (fs, path, etc.)
  * - No browser-specific APIs (window, document, etc.)
- * 
+ *
  * This ensures the schema runs in:
  * - Node.js (scripts/ingest-catalog.js)
  * - Browser (React components)
  * - Test runners (Jest, Vitest, Playwright)
- * 
+ *
  * VERSIONING: Increment when schema changes break compatibility.
  */
 
 export const SCHEMA_VERSION = '1.0.0';
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 1. ENUMS (Source of Truth)
+// SECTION 1: ENUMS (Source of Truth)
 // ═══════════════════════════════════════════════════════════════════════════
 
 export const CATEGORY = Object.freeze({
@@ -92,7 +92,7 @@ export const SUBCATEGORY_KEYWORDS = Object.freeze({
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 2. FACTORY FUNCTIONS (Consistent Object Creation)
+// SECTION 2: FACTORY FUNCTIONS (Consistent Object Creation)
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
@@ -134,7 +134,7 @@ export function defaultCoreItem() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 3. VALIDATORS & HELPERS (Logic Sharing)
+// SECTION 3: VALIDATORS & HELPERS (Logic Sharing)
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
@@ -247,3 +247,95 @@ export function validateWardrobeItem(item) {
 
     return { valid: errors.length === 0, errors };
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SECTION 4: TYPESCRIPT/JSDOC TYPE DEFINITIONS (Documentation)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * @typedef {Object} DataSource
+ * @property {'GAME_TEST'|'REDDIT'|'WIKI'|'YOUTUBE'|'COMMUNITY_TESTED'} type
+ * @property {string} date ISO 8601 date (YYYY-MM-DD)
+ * @property {string} [verified_by] Player or researcher who verified
+ * @property {string} [url] Link to source
+ * @property {string} [notes] Additional context
+ */
+
+/**
+ * @typedef {'HIGH'|'MEDIUM'|'LOW'} ConfidenceLevel
+ * HIGH: Verified by multiple independent sources, in-game tested
+ * MEDIUM: Verified by one source, community consensus
+ * LOW: Estimated, anecdotal, awaiting confirmation
+ */
+
+/**
+ * @typedef {Object} DataQuality
+ * @property {ConfidenceLevel} confidence
+ * @property {DataSource[]} sources
+ * @property {string} last_verified ISO 8601 date when last confirmed
+ * @property {string} [patch_version] RDO patch version this is valid for
+ * @property {string} [deprecation_warning] If null, data is current
+ */
+
+/**
+ * @typedef {Object} RDOItem
+ * @property {string} id Unique identifier (snake_case)
+ * @property {string} name Display name
+ * @property {string} [description] Detailed description
+ * @property {'weapon'|'horse'|'tack'|'clothing'|'consumable'|'tool'|'upgrade'|'vehicle'} type
+ * @property {'gunsmith'|'stable'|'tailor'|'fence'|'general'|'nazar'|'roles'|'harriet'} shop Which vendor sells it
+ * @property {number} price Cash price (0 if gold-only)
+ * @property {number} gold_cost Gold bar cost (0 if cash-only)
+ * @property {number} [tokens] Role tokens required (0 if not applicable)
+ * @property {number} rank_required Minimum character rank to purchase
+ * @property {string} [role_required] If role-gated (e.g., 'trader', 'collector')
+ * @property {number} [role_rank_required] Minimum role level required
+ * @property {number} meta_score 1-10 ranking of usefulness
+ * @property {string} meta_reason Why this item is valued
+ * @property {DataQuality} data_quality
+ */
+
+/**
+ * @typedef {Object} HorseData
+ * @extends RDOItem
+ * @property {number} speed 1-10 rating
+ * @property {number} health 1-10 rating
+ * @property {number} stamina 1-10 rating
+ * @property {number} acceleration 1-10 rating
+ * @property {string} [breed] Horse breed classification
+ * @property {boolean} is_legendary True for epilogue legendary horses
+ */
+
+/**
+ * @typedef {Object} WeaponData
+ * @extends RDOItem
+ * @property {'sidearm'|'longarm'|'melee'} weapon_class
+ * @property {number} damage 1-100 visible rating
+ * @property {number} range 1-100 visible rating
+ * @property {number} accuracy 1-100 visible rating
+ * @property {number} fire_rate 1-100 visible rating
+ */
+
+/**
+ * @typedef {Object} WardrobeItem
+ * @property {string} id Unique identifier
+ * @property {string} name Display name
+ * @property {string} category One of CATEGORY enum values
+ * @property {string} subCategory One of SUBCATEGORY enum values
+ * @property {{ cash: number, gold: number }} unitCost Cost per variant
+ * @property {number} variantsTotal Total variants available
+ * @property {number} variantsOwned Variants player owns
+ * @property {string[]} tags Optional tags for filtering
+ */
+
+/**
+ * @typedef {Object} CoreItem
+ * @property {string} sku Unique stock-keeping unit identifier
+ * @property {string} category Item category
+ * @property {string} subCategory Item subcategory
+ * @property {string} name Display name
+ * @property {{ cash: number, gold: number }} unitCost Purchase cost
+ * @property {{ rank: number, role: string|null, roleRank: number }} requirements Unlock requirements
+ * @property {Object} stats Game stats (varies by item type)
+ * @property {string[]} tags Optional tags for filtering
+ */

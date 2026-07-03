@@ -6,7 +6,7 @@
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { Search, X, Zap, ChevronRight, HelpCircle, Sparkles } from 'lucide-react';
-import { CATALOG } from '../data/rdo-data';
+import { CATALOG } from '../data/catalog';
 import { getNLUEngine } from '../utils/nlu-engine';
 
 // Example queries to show users

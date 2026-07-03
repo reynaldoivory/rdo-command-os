@@ -17,7 +17,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Navigation, DollarSign, RotateCcw, ArrowRight, Loader, ChevronDown, MapPin } from 'lucide-react';
 import { MapBoard } from './MapBoard';
-import { FAST_TRAVEL_LOCATIONS } from '../../data/rdo-data';
+import { FAST_TRAVEL_LOCATIONS } from '../../data/geography';
 import { TIMING } from '../../data/topology';
 import { calcDistance } from '../../utils/rdo-logic';
 import { findShortestPath, pathToEdges } from '../../utils/graph-logic';

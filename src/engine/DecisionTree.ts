@@ -1,8 +1,19 @@
-// FILE: src/engine/DecisionTree.js
+// FILE: src/engine/DecisionTree.ts
 // ═══════════════════════════════════════════════════════════════════════════
 // EFFICIENCY ANALYSIS ENGINE
 // Analyzes player state, cart, and catalog to surface optimization opportunities
 // ═══════════════════════════════════════════════════════════════════════════
+
+import type {
+  RDOProfile,
+  CatalogItem,
+  WeeklySpecials,
+  Recommendation,
+  EfficiencyMetrics,
+  CartTotals,
+  EfficiencyAnalysis,
+  EarningsPerHour,
+} from '../types/rdo.types';
 
 /**
  * Core efficiency thresholds - tuned for RDO economy
@@ -29,9 +40,9 @@ const THRESHOLDS = {
  * @param {Object} specials - Optional weekly specials data from remote feed
  * @returns {Object} Analysis results with metrics and recommendations
  */
-export function analyzeEfficiency(profile, catalog, cart, specials = null) {
-  const recommendations = [];
-  const metrics = {
+export function analyzeEfficiency(profile: RDOProfile, catalog: CatalogItem[], cart: string[], specials: WeeklySpecials | null = null): EfficiencyAnalysis {
+  const recommendations: Recommendation[] = [];
+  const metrics: EfficiencyMetrics = {
     bottleneck: 'NONE',
     efficiency: 100,
     cashUtilization: 0,
@@ -39,13 +50,13 @@ export function analyzeEfficiency(profile, catalog, cart, specials = null) {
   };
 
   // Get cart items
-  const cartItems = cart.map(id => catalog.find(i => i.id === id)).filter(Boolean);
+  const cartItems = cart.map(id => catalog.find(i => i.id === id)).filter((item): item is CatalogItem => Boolean(item));
 
   // Calculate totals
-  const cartTotals = cartItems.reduce((acc, item) => ({
+  const cartTotals: CartTotals = cartItems.reduce((acc, item) => ({
     cash: acc.cash + (item.price || 0),
     gold: acc.gold + (item.gold || 0),
-  }), { cash: 0, gold: 0 });
+  }), { cash: 0, gold: 0 } as CartTotals);
 
   // Calculate utilization percentages
   metrics.cashUtilization = profile.cash > 0 ? (cartTotals.cash / profile.cash) * 100 : 0;
@@ -54,7 +65,7 @@ export function analyzeEfficiency(profile, catalog, cart, specials = null) {
   // ═══ PHASE 0: FRESH SPAWN DETECTION (The First 15 Gold) ═══
   // This is the hardest part of the game. Wrong spending here sets you back weeks.
 
-  const hasAnyRole = Object.values(profile.roles || {}).some(xp => xp > 0);
+  const hasAnyRole = Object.values(profile.roles || {}).some(xp => (xp as number) > 0);
   const isFreshSpawn = profile.gold < 15 && !hasAnyRole && profile.rank < 15;
 
   if (isFreshSpawn) {
@@ -160,8 +171,8 @@ export function analyzeEfficiency(profile, catalog, cart, specials = null) {
   }
 
   // Rule 2: Reserve Depletion Warning
-  const cashAfter = profile.cash - cartTotals.cash;
-  const goldAfter = profile.gold - cartTotals.gold;
+  const cashAfter: number = profile.cash - cartTotals.cash;
+  const goldAfter: number = profile.gold - cartTotals.gold;
 
   if (cashAfter >= 0 && cashAfter < THRESHOLDS.CASH_RESERVE_MIN && cartTotals.cash > 0) {
     metrics.efficiency -= 10;
@@ -186,21 +197,21 @@ export function analyzeEfficiency(profile, catalog, cart, specials = null) {
   }
 
   // Rule 3: Locked Items in Cart
-  const lockedItems = cartItems.filter(item => item.rank > profile.rank);
+  const lockedItems = cartItems.filter(item => (item.rank || 0) > profile.rank);
   if (lockedItems.length > 0) {
     metrics.efficiency -= 15;
     recommendations.push({
       priority: 1,
       title: 'Rank-Locked Items',
       desc: `${lockedItems.length} item(s) in your cart require higher rank: ${lockedItems.map(i => `${i.name} (Rank ${i.rank})`).join(', ')}`,
-      action: `Reach Rank ${Math.max(...lockedItems.map(i => i.rank))} to unlock all cart items`,
+      action: `Reach Rank ${Math.max(...lockedItems.map(i => i.rank || 0))} to unlock all cart items`,
       type: 'critical',
     });
   }
 
   // Rule 4: Gold vs Cash Optimization
   const goldPurchasableWithCash = cartItems.filter(item =>
-    item.gold > 0 && item.price > 0 && profile.cash >= item.price
+    (item.gold || 0) > 0 && (item.price || 0) > 0 && profile.cash >= (item.price || 0)
   );
   if (goldPurchasableWithCash.length > 0 && profile.gold < profile.cash / 25) {
     recommendations.push({
@@ -215,7 +226,7 @@ export function analyzeEfficiency(profile, catalog, cart, specials = null) {
   // Rule 5: Role Progression Check
   const roles = profile.roles || {};
   const underleveledRoles = Object.entries(roles)
-    .filter(([, xp]) => xp < 1000) // Less than level 5 equivalent
+    .filter(([, xp]) => (xp as number) < 1000) // Less than level 5 equivalent
     .map(([name]) => name);
 
   if (underleveledRoles.length >= 3 && cart.length > 0) {
@@ -241,7 +252,7 @@ export function analyzeEfficiency(profile, catalog, cart, specials = null) {
 
   // Rule 7: High-Value Item Detection
   const highValueItems = cartItems.filter(item =>
-    (item.gold >= 15) || (item.price >= 500)
+    ((item.gold || 0) >= 15) || ((item.price || 0) >= 500)
   );
   if (highValueItems.length > 1) {
     recommendations.push({
@@ -255,7 +266,7 @@ export function analyzeEfficiency(profile, catalog, cart, specials = null) {
 
   // ═══ RULE 8: WEEKLY SPECIALS INTEGRATION ═══
   // Surface discounted items from Rockstar Newswire that player can afford
-  if (specials?.discounts?.length > 0) {
+  if (specials && specials.discounts && specials.discounts.length > 0) {
     // Find affordable discounts not already in cart
     const affordableDiscounts = specials.discounts.filter(discount => {
       // Check if item exists in catalog
@@ -282,7 +293,7 @@ export function analyzeEfficiency(profile, catalog, cart, specials = null) {
       recommendations.push({
         priority: 1,
         title: `🏷️ SALE: ${topDiscount.name} (-${topDiscount.percentOff}%)`,
-        desc: `This week only! Save $${(topDiscount.originalPrice - topDiscount.salePrice).toFixed(0)} on ${topDiscount.name}. Sale ends ${specials.meta?.validUntil ? new Date(specials.meta.validUntil).toLocaleDateString() : 'soon'}.`,
+        desc: `This week only! Save $${(topDiscount.originalPrice - (topDiscount.salePrice || 0)).toFixed(0)} on ${topDiscount.name}. Sale ends ${specials.meta?.validUntil ? new Date(specials.meta.validUntil).toLocaleDateString() : 'soon'}.`,
         action: 'Add to cart before weekly reset',
         type: 'critical',
         itemId: topDiscount.itemId,
@@ -303,13 +314,13 @@ export function analyzeEfficiency(profile, catalog, cart, specials = null) {
   }
 
   // Surface 2X/3X bonus activities
-  if (specials?.bonuses?.length > 0) {
+  if (specials && specials.bonuses && specials.bonuses.length > 0) {
     const activeBonuses = specials.bonuses.filter(b => b.multiplier >= 2);
     const roleBonus = activeBonuses.find(b => b.role);
 
     if (roleBonus) {
       // Check if player has the role leveled
-      const roleXP = profile.roles?.[roleBonus.role] || 0;
+      const roleXP = (roleBonus.role ? (profile.roles as Record<string, number>)?.[roleBonus.role] : 0) || 0;
       if (roleXP >= 1000) { // At least level ~5
         recommendations.push({
           priority: 2,
@@ -347,7 +358,7 @@ export function analyzeEfficiency(profile, catalog, cart, specials = null) {
 /**
  * Generate a human-readable summary
  */
-function generateSummary(metrics, recommendations) {
+function generateSummary(metrics: EfficiencyMetrics, recommendations: Recommendation[]): string {
   const criticalCount = recommendations.filter(r => r.type === 'critical').length;
   const warningCount = recommendations.filter(r => r.type === 'warning').length;
 
@@ -365,7 +376,7 @@ function generateSummary(metrics, recommendations) {
 /**
  * Quick affordability check for a single item
  */
-export function canAffordItem(profile, item) {
+export function canAffordItem(profile: RDOProfile, item: CatalogItem): boolean {
   return profile.cash >= (item.price || 0) &&
     profile.gold >= (item.gold || 0) &&
     profile.rank >= (item.rank || 0);
@@ -374,7 +385,7 @@ export function canAffordItem(profile, item) {
 /**
  * Calculate time to afford an item based on average earnings
  */
-export function estimateTimeToAfford(profile, item, earningsPerHour = { cash: 200, gold: 0.5 }) {
+export function estimateTimeToAfford(profile: RDOProfile, item: CatalogItem, earningsPerHour: EarningsPerHour = { cash: 200, gold: 0.5 }): number {
   const cashNeeded = Math.max(0, (item.price || 0) - profile.cash);
   const goldNeeded = Math.max(0, (item.gold || 0) - profile.gold);
 

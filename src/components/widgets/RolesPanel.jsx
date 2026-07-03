@@ -1,7 +1,7 @@
 import React from 'react';
 import { RoleCard } from './RoleCard';
 import { useProfile } from '../../context';
-import { ROLES } from '../../data/rdo-data';
+import { ROLES } from '../../data/progression';
 
 export const RolesPanel = () => {
     const { profile, updateRole } = useProfile();

@@ -1,9 +1,11 @@
-// FILE: src/logic/decisionRules.js
+// FILE: src/logic/decisionRules.ts
 // ═══════════════════════════════════════════════════════════════════════════
 // DECISION RULES CONFIGURATION
 // Single source of truth for all "magic numbers" and UX labels
 // Logic and UI both read from this config for consistency
 // ═══════════════════════════════════════════════════════════════════════════
+
+import type { Phase, Priority, Vector } from '../types/rdo.types';
 
 /**
  * PHASES - Character progression stages
@@ -15,7 +17,7 @@ export const PHASES = {
         id: 'early',
         name: 'Survival & Acquisition',
         color: 'text-red-400',
-        range: [0, 40],
+        range: [0, 40] as [number, number],
         focus: 'CASH',
         description: 'Focus on unlocking roles and building capital'
     },
@@ -23,7 +25,7 @@ export const PHASES = {
         id: 'mid',
         name: 'Mid-Game Consolidation',
         color: 'text-amber-400',
-        range: [40, 90],
+        range: [40, 90] as [number, number],
         focus: 'EFFICIENCY',
         description: 'Optimize role progression and efficiency'
     },
@@ -31,11 +33,11 @@ export const PHASES = {
         id: 'late',
         name: 'Endgame Optimization',
         color: 'text-green-400',
-        range: [90, 999],
+        range: [90, 999] as [number, number],
         focus: 'GOLD',
         description: 'Max efficiency farming and collection completion'
     }
-};
+} satisfies Record<string, Phase>;
 
 /**
  * THRESHOLDS - Critical values that trigger actions
@@ -54,7 +56,7 @@ export const THRESHOLDS = {
     WAGON_FULL: 90,        // Sell immediately (90% buffer for raids)
     WAGON_NEAR_FULL: 75,   // Prepare for sale
     WAGON_EMPTY: 10        // Focus on materials
-};
+} as const;
 
 /**
  * PRIORITIES - Action urgency levels
@@ -86,7 +88,7 @@ export const PRIORITIES = {
         badge: 'OPTIONAL',
         style: 'bg-gray-900/50 text-gray-400 border-gray-500'
     }
-};
+} as const satisfies Record<string, Priority>;
 
 /**
  * VECTORS - Action categories the engine can recommend
@@ -97,7 +99,7 @@ export const VECTORS = {
         id: 'trader_sale',
         icon: 'Truck',
         category: 'TRADER',
-        baseYield: '$625',
+        baseYield: '25',
         description: 'Sell full trader wagon'
     },
     TRADER_RESUPPLY: {
@@ -118,14 +120,14 @@ export const VECTORS = {
         id: 'collector_cycle',
         icon: 'Map',
         category: 'COLLECTOR',
-        baseYield: '$1000+',
+        baseYield: '000+',
         description: 'Complete collection sets'
     },
     MOONSHINER: {
         id: 'moonshiner',
         icon: 'Flask',
         category: 'MOONSHINER',
-        baseYield: '$247',
+        baseYield: '47',
         description: 'Deliver moonshine batch'
     },
     FREE_ROAM: {
@@ -142,12 +144,12 @@ export const VECTORS = {
         baseYield: '~0.2-0.5 GB',
         description: 'Complete daily challenges'
     }
-};
+} as const satisfies Record<string, Vector>;
 
 /**
  * Helper to get phase from rank
  */
-export const getPhaseFromRank = (rank) => {
+export const getPhaseFromRank = (rank: number): Phase => {
     if (rank < PHASES.MID.range[0]) return PHASES.EARLY;
     if (rank < PHASES.LATE.range[0]) return PHASES.MID;
     return PHASES.LATE;

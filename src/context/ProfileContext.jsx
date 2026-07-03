@@ -6,7 +6,8 @@
 
 import React, { useMemo, useState, useCallback } from 'react';
 import { analyzeProfile, explainAnalysis } from '../logic/nextBestAction';
-import { CATALOG, UI_CONFIG } from '../data/rdo-data';
+import { CATALOG } from '../data/catalog';
+import { UI_CONFIG } from '../data/ui-config';
 import { usePersistentState } from '../hooks/usePersistentState';
 import { migrateProfile } from '../utils/migrations';
 import { getLevelFromXP } from '../utils/rdo-logic';

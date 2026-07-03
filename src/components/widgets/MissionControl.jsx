@@ -13,7 +13,7 @@ import {
 import { useProfile } from '../../context';
 import { useDailies } from '../../hooks/useDailies';
 import { getNextEvent, getCurrentActiveEvent } from '../../utils/schedule-logic';
-import { ROLES } from '../../data/rdo-data';
+import { ROLES } from '../../data/progression';
 
 // Action type metadata
 const ACTION_TYPES = {

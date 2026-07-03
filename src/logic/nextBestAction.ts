@@ -1,4 +1,4 @@
-// FILE: src/logic/nextBestAction.js
+// FILE: src/logic/nextBestAction.ts
 // ═══════════════════════════════════════════════════════════════════════════
 // NEXT BEST ACTION ENGINE
 // Pure logic module using Rule Registry pattern
@@ -7,13 +7,24 @@
 
 import { PHASES, THRESHOLDS, PRIORITIES, VECTORS } from './decisionRules';
 import * as sel from './selectors';
+import type {
+    RDOProfile,
+    WagonState,
+    DecisionRule,
+    RuleResult,
+    ActionRecommendation,
+    ExplainedRecommendation,
+    InputSnapshot,
+    RuleEvaluation,
+    SkipTraceEntry,
+} from '../types/rdo.types';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // RULE REGISTRY - Ordered by precedence (first match wins)
 // Each rule: { id, predicate(profile, wagon), build(profile, wagon) }
 // ═══════════════════════════════════════════════════════════════════════════
 
-const RULES = [
+const RULES: DecisionRule[] = [
     // ─────────────────────────────────────────────────────────────────────────
     // RULE 1: TRADER WAGON FULL → CRITICAL SALE
     // Money sitting on the table, always top priority
@@ -193,7 +204,7 @@ const RULES = [
 // DEFAULT FALLBACK ACTION
 // ═══════════════════════════════════════════════════════════════════════════
 
-const DEFAULT_ACTION = {
+const DEFAULT_ACTION: RuleResult = {
     priority: PRIORITIES.MAINTAIN.level,
     primary: {
         icon: VECTORS.DAILIES.icon,
@@ -215,9 +226,9 @@ const DEFAULT_ACTION = {
  * @param {Object} wagonState - Trader wagon state { load: 0-100 }
  * @returns {Object} { phase, priority, primaryAction, secondaryAction, constraints }
  */
-export const analyzeProfile = (profile = {}, wagonState = { load: 0 }) => {
+export const analyzeProfile = (profile: RDOProfile = {} as RDOProfile, wagonState: WagonState = { load: 0 }): ActionRecommendation => {
     // Normalize wagon input
-    const normalizedWagon = {
+    const normalizedWagon: WagonState = {
         load: typeof wagonState.load === 'number'
             ? wagonState.load
             : sel.safeGetNumber(wagonState, 'fillPercent', 0)
@@ -226,7 +237,7 @@ export const analyzeProfile = (profile = {}, wagonState = { load: 0 }) => {
     const rank = sel.getRank(profile);
 
     // Determine phase from rank
-    let phase = PHASES.EARLY;
+    let phase: typeof PHASES[keyof typeof PHASES] = PHASES.EARLY;
     if (rank >= PHASES.MID.range[0] && rank < PHASES.LATE.range[0]) phase = PHASES.MID;
     if (rank >= PHASES.LATE.range[0]) phase = PHASES.LATE;
 
@@ -262,20 +273,20 @@ export const analyzeProfile = (profile = {}, wagonState = { load: 0 }) => {
  * @param {Object} wagonState - Wagon state { load: 0-100 }
  * @returns {Object} Full analysis + diagnostic metadata
  */
-export const explainAnalysis = (profile = {}, wagonState = { load: 0 }) => {
+export const explainAnalysis = (profile: RDOProfile = {} as RDOProfile, wagonState: WagonState = { load: 0 }): ExplainedRecommendation => {
     // Normalize wagon input
-    const normalizedWagon = {
+    const normalizedWagon: WagonState = {
         load: typeof wagonState.load === 'number'
             ? wagonState.load
             : sel.safeGetNumber(wagonState, 'fillPercent', 0)
     };
 
     // Capture input snapshot for traceability
-    const inputSnapshot = {
+    const inputSnapshot: InputSnapshot = {
         rank: sel.getRank(profile),
         cash: sel.getCash(profile),
         gold: sel.getGold(profile),
-        wagonLoad: normalizedWagon.load,
+        wagonLoad: normalizedWagon.load!,
         hasTrader: sel.hasTrader(profile),
         hasBounty: sel.hasBounty(profile),
         hasCollector: sel.hasCollector(profile),
@@ -289,12 +300,12 @@ export const explainAnalysis = (profile = {}, wagonState = { load: 0 }) => {
 
     // Determine phase
     const rank = inputSnapshot.rank;
-    let phase = PHASES.EARLY;
+    let phase: typeof PHASES[keyof typeof PHASES] = PHASES.EARLY;
     if (rank >= PHASES.MID.range[0] && rank < PHASES.LATE.range[0]) phase = PHASES.MID;
     if (rank >= PHASES.LATE.range[0]) phase = PHASES.LATE;
 
     // Evaluate all rules and capture which fired + WHY
-    const ruleEvaluations = RULES.map(rule => ({
+    const ruleEvaluations: RuleEvaluation[] = RULES.map(rule => ({
         id: rule.id,
         matched: rule.predicate(profile, normalizedWagon),
         reason: rule.explain ? rule.explain(profile, normalizedWagon) : 'no explain function'
@@ -315,7 +326,7 @@ export const explainAnalysis = (profile = {}, wagonState = { load: 0 }) => {
 
     // Build skipTrace - rules skipped before the active one
     const activeIndex = activeRule ? RULES.indexOf(activeRule) : RULES.length;
-    const skipTrace = RULES.slice(0, activeIndex).map(r => ({
+    const skipTrace: SkipTraceEntry[] = RULES.slice(0, activeIndex).map(r => ({
         id: r.id,
         reason: r.explain ? r.explain(profile, normalizedWagon) : 'skipped'
     }));

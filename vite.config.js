@@ -22,12 +22,28 @@ export default defineConfig({
     })
   ],
   test: {
+    globals: true,
+    setupFiles: [],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
       reportsDirectory: './coverage',
-      include: ['src/utils/**', 'src/engine/**'],
-      exclude: ['**/*.test.js', '**/*.spec.js']
+      include: [
+        'src/utils/**',
+        'src/engine/**',
+        'src/hooks/**',
+        'src/logic/**',
+        'src/context/**',
+        'src/components/**'
+      ],
+      exclude: [
+        '**/*.test.js',
+        '**/*.test.jsx',
+        '**/*.spec.js',
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/*.config.js'
+      ]
     }
   }
 })

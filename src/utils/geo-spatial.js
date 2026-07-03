@@ -2,7 +2,7 @@
 // Geospatial Intelligence Engine for RDO Navigation
 // Provides proximity calculations, nearest-post lookup, and route optimization
 
-import { FAST_TRAVEL_LOCATIONS } from '../data/rdo-data';
+import { FAST_TRAVEL_LOCATIONS } from '../data/geography';
 import { calcDistance } from './rdo-logic';
 
 /**

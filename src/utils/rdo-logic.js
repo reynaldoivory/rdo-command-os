@@ -4,7 +4,7 @@
 // Extracted for testability and separation of concerns
 // ═══════════════════════════════════════════════════════════════════════════
 
-import { RANK_XP_TABLE, ROLE_XP_TABLE } from '../data/rdo-data';
+import { RANK_XP_TABLE, ROLE_XP_TABLE } from '../data/progression';
 
 /**
  * Calculate level from cumulative XP

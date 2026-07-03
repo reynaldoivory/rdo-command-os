@@ -2,7 +2,7 @@
 // Fast travel cost calculator between RDO locations
 import React, { useState } from 'react';
 import { Train } from 'lucide-react';
-import { FAST_TRAVEL_LOCATIONS } from '../../data/rdo-data';
+import { FAST_TRAVEL_LOCATIONS } from '../../data/geography';
 import { calcFastTravelCost } from '../../utils/rdo-logic';
 
 export const FastTravelCalc = () => {
