@@ -143,7 +143,7 @@ describe('getTimeUntilExpiry', () => {
   beforeEach(() => {
     // Mock current date to 2024-03-14 (3 days before expiry)
     const mockDate = new Date('2024-03-14T12:00:00Z');
-    global.Date = class extends Date {
+    globalThis.Date = class extends Date {
       constructor(...args) {
         if (args.length === 0) {
           super(mockDate);
@@ -156,7 +156,7 @@ describe('getTimeUntilExpiry', () => {
 
   afterEach(() => {
     // Restore Date
-    global.Date = Date;
+    globalThis.Date = Date;
   });
 
   it('calculates days and hours remaining', () => {
@@ -227,11 +227,11 @@ describe('Cache behavior', () => {
       }
     };
 
-    global.localStorage = localStorageMock;
+    globalThis.localStorage = localStorageMock;
   });
 
   afterEach(() => {
-    delete global.localStorage;
+    delete globalThis.localStorage;
   });
 
   it('stores cache key in expected format', () => {

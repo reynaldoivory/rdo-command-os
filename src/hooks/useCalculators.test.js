@@ -93,7 +93,6 @@ describe('calculateBountyPayout', () => {
 
     it('caps time multiplier at 2.5x', () => {
       const result = calculateBountyPayout(60, true, 5);
-      const maxMultiplier = 60 / 12;
       expect(result.gold).toBeLessThanOrEqual(0.08 * 5 * 2.5);
     });
   });

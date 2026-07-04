@@ -47,7 +47,6 @@ describe('ProfileContext - Cart Logic', () => {
   });
 
   it('clears cart', () => {
-    const cart = ['item1', 'item2', 'item3'];
     const newCart = [];
     expect(newCart).toEqual([]);
   });
