@@ -1,8 +1,11 @@
 # ═══════════════════════════════════════════════════════════════════════════
 # QUALITY GATE - SonarCloud Analysis
 # ═══════════════════════════════════════════════════════════════════════════
-# Runs on every push to main and on all PRs
-# Blocks merge if quality gate fails (new bugs, vulnerabilities, etc.)
+# Runs on every push to main and on all PRs.
+# The whole job is a no-op (neutral success) until a SONAR_TOKEN repository
+# secret is configured — without one the scan can never succeed, and this
+# workflow sat permanently red because of it. Test/build correctness is
+# already enforced by ci.yml; this workflow only adds the Sonar scan.
 
 name: Quality Gate
 
@@ -17,28 +20,38 @@ jobs:
   sonarcloud:
     name: SonarCloud Scan
     runs-on: ubuntu-latest
-    
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
     steps:
+      - name: Note skip when SONAR_TOKEN is not configured
+        if: env.SONAR_TOKEN == ''
+        run: echo "SONAR_TOKEN secret not set — skipping SonarCloud scan." >> "$GITHUB_STEP_SUMMARY"
+
       - name: Checkout Repository
+        if: env.SONAR_TOKEN != ''
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Full clone required for blame data and accurate analysis
 
       - name: Setup Node.js
+        if: env.SONAR_TOKEN != ''
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
       - name: Install Dependencies
+        if: env.SONAR_TOKEN != ''
         run: npm ci
 
       - name: Run Tests with Coverage
-        run: npm run test -- --coverage --reporter=verbose
+        if: env.SONAR_TOKEN != ''
+        run: npm test -- --coverage --reporter=verbose
         continue-on-error: true  # Don't fail pipeline if tests fail (SonarCloud reports it)
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2
+        if: env.SONAR_TOKEN != ''
+        uses: SonarSource/sonarqube-scan-action@v4  # renamed from deprecated sonarcloud-github-action
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # PR decoration
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    # SonarCloud auth
