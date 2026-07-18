@@ -52,6 +52,16 @@ const LOW_CASH_PROFILE = {
   roles: { bountyHunter: 10000, trader: 8000, collector: 5000, moonshiner: 0, naturalist: 0 }
 };
 
+// Naturalist already unlocked — the only profile shape that can reach the
+// default fallback with 25+ gold (rules 7-8 catch everyone without the role)
+const MID_GAME_ALL_ROLES = {
+  cash: 2000,
+  gold: 40,
+  rank: 45,
+  xp: 100000,
+  roles: { bountyHunter: 10000, trader: 8000, collector: 5000, moonshiner: 0, naturalist: 3000 }
+};
+
 // ═══════════════════════════════════════════════════════════════════════════
 // RULE MATCHING TESTS
 // ═══════════════════════════════════════════════════════════════════════════
@@ -255,18 +265,66 @@ describe('analyzeProfile - Constraints', () => {
 
 describe('analyzeProfile - Default Fallback', () => {
   it('returns daily challenges when no rules match', () => {
-    const result = analyzeProfile(MID_GAME_WITH_TRADER, { load: 50 });
+    const result = analyzeProfile(MID_GAME_ALL_ROLES, { load: 50 });
     expect(result.primaryAction.text).toContain('Daily Challenges');
   });
 
   it('default has MAINTAIN priority', () => {
-    const result = analyzeProfile(MID_GAME_WITH_TRADER, { load: 50 });
+    const result = analyzeProfile(MID_GAME_ALL_ROLES, { load: 50 });
     expect(result.priority).toBe(PRIORITIES.MAINTAIN.level);
   });
 
   it('suggests streak maintenance', () => {
-    const result = analyzeProfile(MID_GAME_WITH_TRADER, { load: 50 });
+    const result = analyzeProfile(MID_GAME_ALL_ROLES, { load: 50 });
     expect(result.primaryAction.subtext).toContain('streak');
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NATURALIST RULE TESTS (rules 7-8 — fire only when economy rules pass)
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe('analyzeProfile - Naturalist Rules', () => {
+  describe('RULE: naturalist_unlock_ready', () => {
+    it('suggests buying the Sample Kit when economy is stable and gold >= 25', () => {
+      const result = analyzeProfile(MID_GAME_WITH_TRADER, { load: 50 });
+      expect(result.primaryAction.text).toContain('Unlock Naturalist');
+      expect(result.priority).toBe(PRIORITIES.HIGH.level);
+      expect(result.constraints).toContain('BUY NATURALIST');
+    });
+
+    it('allowGoldSpend suppresses the global HOLD GOLD safety net', () => {
+      // gold 30: >= NATURALIST_COST(25) but < GOLD_SAFE(40)
+      const almostSafe = { ...MID_GAME_WITH_TRADER, gold: 30 };
+      const result = analyzeProfile(almostSafe, { load: 50 });
+      expect(result.primaryAction.text).toContain('Unlock Naturalist');
+      expect(result.constraints).not.toContain('HOLD GOLD');
+    });
+
+    it('does not fire once Naturalist is unlocked', () => {
+      const result = analyzeProfile(MID_GAME_ALL_ROLES, { load: 50 });
+      expect(result.primaryAction.text).not.toContain('Naturalist');
+    });
+
+    it('does not outrank cash-poor collector sets', () => {
+      const result = analyzeProfile(LOW_CASH_PROFILE, { load: 50 });
+      expect(result.primaryAction.text).toContain('Collector');
+    });
+  });
+
+  describe('RULE: naturalist_gold_shortfall', () => {
+    it('computes the gold shortfall when stable but short of 25', () => {
+      // gold 20: above GOLD_CRITICAL(15), below NATURALIST_COST(25)
+      const shortProfile = { ...MID_GAME_WITH_TRADER, gold: 20 };
+      const result = analyzeProfile(shortProfile, { load: 50 });
+      expect(result.primaryAction.text).toContain('Need 5.0 Gold');
+      expect(result.constraints).toContain('HOLD GOLD');
+    });
+
+    it('does not outrank gold_critical bounty farming', () => {
+      const result = analyzeProfile(LOW_GOLD_PROFILE, { load: 50 });
+      expect(result.primaryAction.text).toContain('Bounties');
+    });
   });
 });
 
@@ -373,7 +431,7 @@ describe('analyzeProfile - Return Structure', () => {
   });
 
   it('secondaryAction can be null', () => {
-    const result = analyzeProfile(MID_GAME_WITH_TRADER, { load: 50 });
+    const result = analyzeProfile(MID_GAME_ALL_ROLES, { load: 50 });
     // Default action has no secondary
     expect(result.secondaryAction).toBeNull();
   });

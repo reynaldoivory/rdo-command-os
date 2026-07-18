@@ -16,7 +16,7 @@ export const safeGetNumber = (obj: unknown, path: string, fallback: number = 0):
     const val = path
         .split('.')
         .reduce((acc: unknown, part: string) => (acc && typeof acc === 'object' && (acc as Record<string, unknown>)[part] !== undefined ? (acc as Record<string, unknown>)[part] : undefined), obj);
-    const num = typeof val === 'number' ? val : parseFloat(val as string);
+    const num = typeof val === 'number' ? val : Number.parseFloat(val as string);
     return Number.isFinite(num) ? num : fallback;
 };
 
@@ -47,6 +47,7 @@ export const hasTrader = (profile: RDOProfile): boolean => getTraderLevel(profil
 export const hasBounty = (profile: RDOProfile): boolean => getBountyLevel(profile) > 0;
 export const hasCollector = (profile: RDOProfile): boolean => getCollectorLevel(profile) > 0;
 export const hasMoonshiner = (profile: RDOProfile): boolean => getMoonshinerLevel(profile) > 0;
+export const hasNaturalist = (profile: RDOProfile): boolean => getNaturalistLevel(profile) > 0;
 export const hasAnyRole = (profile: RDOProfile): boolean => {
     const roles = profile?.roles || {};
     return Object.values(roles).some(xp => (xp as number) > 0);

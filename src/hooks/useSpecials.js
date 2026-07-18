@@ -10,6 +10,32 @@ import { useState, useEffect, useCallback } from 'react';
 const CACHE_KEY = 'rdo_specials_cache';
 const CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
 
+/**
+ * Read + validate the cache entry.
+ * Module-level so useState initializers can hydrate from it directly.
+ */
+function readSpecialsCache() {
+    try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (!cached) return null;
+
+        const { data, timestamp } = JSON.parse(cached);
+        const age = Date.now() - timestamp;
+
+        // Check if cache is still fresh
+        if (age < CACHE_DURATION_MS) {
+            return { data, timestamp: new Date(timestamp) };
+        }
+
+        // Cache expired
+        return null;
+    } catch {
+        // Invalid cache, clear it
+        localStorage.removeItem(CACHE_KEY);
+        return null;
+    }
+}
+
 // Default fallback data (used when fetch fails and no cache exists)
 const FALLBACK_SPECIALS = {
     meta: {
@@ -37,35 +63,18 @@ const FALLBACK_SPECIALS = {
  * @returns {{ specials: object, loading: boolean, error: string|null, refresh: () => void, lastFetched: Date|null }}
  */
 export function useSpecials(feedUrl = '/data/current_specials.json') {
-    const [specials, setSpecials] = useState(null);
-    const [loading, setLoading] = useState(true);
+    // Hydrate from cache in the initializers so the mount effect never needs a
+    // synchronous setState (react-hooks/set-state-in-effect)
+    const [cacheSnapshot] = useState(readSpecialsCache);
+    const [specials, setSpecials] = useState(cacheSnapshot ? cacheSnapshot.data : null);
+    const [loading, setLoading] = useState(cacheSnapshot === null);
     const [error, setError] = useState(null);
-    const [lastFetched, setLastFetched] = useState(null);
+    const [lastFetched, setLastFetched] = useState(cacheSnapshot ? cacheSnapshot.timestamp : null);
 
     /**
      * Check if cached data is still valid
      */
-    const getCachedData = useCallback(() => {
-        try {
-            const cached = localStorage.getItem(CACHE_KEY);
-            if (!cached) return null;
-
-            const { data, timestamp } = JSON.parse(cached);
-            const age = Date.now() - timestamp;
-
-            // Check if cache is still fresh
-            if (age < CACHE_DURATION_MS) {
-                return { data, timestamp: new Date(timestamp) };
-            }
-
-            // Cache expired
-            return null;
-        } catch {
-            // Invalid cache, clear it
-            localStorage.removeItem(CACHE_KEY);
-            return null;
-        }
-    }, []);
+    const getCachedData = useCallback(() => readSpecialsCache(), []);
 
     /**
      * Save data to cache
@@ -82,6 +91,38 @@ export function useSpecials(feedUrl = '/data/current_specials.json') {
             console.warn('Unable to cache specials data');
         }
     }, []);
+
+    /**
+     * Fetch + validate from the network, update the cache.
+     * No setState here — shared by the mount effect and refresh path.
+     */
+    const fetchFromNetwork = useCallback(async (forceRefresh) => {
+        const response = await fetch(feedUrl, {
+            cache: forceRefresh ? 'no-cache' : 'default'
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        // Validate structure
+        if (!data.meta || !data.bonuses) {
+            throw new Error('Invalid specials data structure');
+        }
+
+        // Check if data is still valid (not expired)
+        if (data.meta.validUntil) {
+            const validUntil = new Date(data.meta.validUntil);
+            if (validUntil < new Date()) {
+                console.warn('Specials data has expired, may be outdated');
+            }
+        }
+
+        setCachedData(data);
+        return data;
+    }, [feedUrl, setCachedData]);
 
     /**
      * Fetch fresh data from remote
@@ -103,31 +144,7 @@ export function useSpecials(feedUrl = '/data/current_specials.json') {
 
         // Fetch from remote
         try {
-            const response = await fetch(feedUrl, {
-                cache: forceRefresh ? 'no-cache' : 'default'
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-
-            // Validate structure
-            if (!data.meta || !data.bonuses) {
-                throw new Error('Invalid specials data structure');
-            }
-
-            // Check if data is still valid (not expired)
-            if (data.meta.validUntil) {
-                const validUntil = new Date(data.meta.validUntil);
-                if (validUntil < new Date()) {
-                    console.warn('Specials data has expired, may be outdated');
-                }
-            }
-
-            // Cache and set
-            setCachedData(data);
+            const data = await fetchFromNetwork(forceRefresh);
             setSpecials(data);
             setLastFetched(new Date());
         } catch (err) {
@@ -146,7 +163,7 @@ export function useSpecials(feedUrl = '/data/current_specials.json') {
         } finally {
             setLoading(false);
         }
-    }, [feedUrl, getCachedData, setCachedData]);
+    }, [getCachedData, fetchFromNetwork]);
 
     /**
      * Force refresh (bypass cache)
@@ -155,10 +172,32 @@ export function useSpecials(feedUrl = '/data/current_specials.json') {
         fetchSpecials(true);
     }, [fetchSpecials]);
 
-    // Initial fetch on mount
+    // Initial fetch on mount — only when the cache initializer came up empty.
+    // Fetches directly so no synchronous setState runs inside the effect;
+    // fetchSpecials (with its sync loading flip) stays for user-triggered refresh.
     useEffect(() => {
-        fetchSpecials();
-    }, [fetchSpecials]);
+        if (specials !== null) return;
+        let cancelled = false;
+        (async () => {
+            try {
+                const data = await fetchFromNetwork(false);
+                if (!cancelled) {
+                    setSpecials(data);
+                    setLastFetched(new Date());
+                }
+            } catch (err) {
+                console.error('Failed to fetch specials:', err);
+                if (!cancelled) {
+                    setError(err.message);
+                    setSpecials(FALLBACK_SPECIALS);
+                }
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        })();
+        return () => { cancelled = true; };
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only; cache hits hydrate via initializers
+    }, []);
 
     return {
         specials,

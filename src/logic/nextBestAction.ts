@@ -19,6 +19,8 @@ import type {
     SkipTraceEntry,
 } from '../types/rdo.types';
 
+const NATURALIST_GOLD_COST = 25;
+
 // ═══════════════════════════════════════════════════════════════════════════
 // RULE REGISTRY - Ordered by precedence (first match wins)
 // Each rule: { id, predicate(profile, wagon), build(profile, wagon) }
@@ -197,6 +199,69 @@ const RULES: DecisionRule[] = [
             secondary: { text: 'Coin and Jewelry sets have highest value.' },
             constraints: []
         })
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // RULE 7: NATURALIST READY → BUY SAMPLE KIT
+    // Economy stable and 25+ gold banked with the role still locked.
+    // NOTE: the naturalist-logic PR ordered these two rules ABOVE the trader/
+    // gold/cash rules, but their predicates match every profile lacking the
+    // role, which made rules 2-6 unreachable for non-Naturalist players.
+    // Placed after the economy rules instead: same advice, sane precedence.
+    // ─────────────────────────────────────────────────────────────────────────
+    {
+        id: 'naturalist_unlock_ready',
+        predicate: (p) => !sel.hasNaturalist(p) && sel.getGold(p) >= NATURALIST_GOLD_COST,
+        explain: (p) => {
+            const gold = sel.getGold(p);
+            if (sel.hasNaturalist(p)) return `naturalist already unlocked (xp: ${sel.getNaturalistLevel(p)})`;
+            if (gold < NATURALIST_GOLD_COST) return `gold ${gold.toFixed(1)} < NATURALIST_COST(${NATURALIST_GOLD_COST})`;
+            return `MATCHED: gold ${gold.toFixed(1)} >= NATURALIST_COST(${NATURALIST_GOLD_COST})`;
+        },
+        build: () => ({
+            priority: PRIORITIES.HIGH.level,
+            primary: {
+                icon: VECTORS.NATURALIST_UNLOCK.icon,
+                text: `Unlock Naturalist: Buy Sample Kit (${NATURALIST_GOLD_COST} Gold).`,
+                subtext: 'Visit Harriet (any Naturalist camp) and purchase immediately.',
+                impact: 'ROLE UNLOCK'
+            },
+            secondary: { text: 'After unlock, sedate legendaries to feed Trader/Collector money.' },
+            constraints: ['BUY NATURALIST'],
+            allowGoldSpend: true
+        })
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // RULE 8: NATURALIST SHORTFALL → FARM GOLD
+    // Economy stable but short of the 25 gold for the Sample Kit
+    // ─────────────────────────────────────────────────────────────────────────
+    {
+        id: 'naturalist_gold_shortfall',
+        predicate: (p) => !sel.hasNaturalist(p) && sel.getGold(p) < NATURALIST_GOLD_COST,
+        explain: (p) => {
+            const gold = sel.getGold(p);
+            if (sel.hasNaturalist(p)) return `naturalist already unlocked (xp: ${sel.getNaturalistLevel(p)})`;
+            return `MATCHED: gold ${gold.toFixed(1)} < NATURALIST_COST(${NATURALIST_GOLD_COST})`;
+        },
+        build: (p) => {
+            const gold = sel.getGold(p);
+            const shortfall = Math.max(0, NATURALIST_GOLD_COST - gold).toFixed(1);
+            const hasBounty = sel.hasBounty(p);
+            return {
+                priority: PRIORITIES.HIGH.level,
+                primary: {
+                    icon: VECTORS.NATURALIST_FARM.icon,
+                    text: `Need ${shortfall} Gold to unlock Naturalist.`,
+                    subtext: hasBounty
+                        ? 'Chain 2-3 star bounties + Dailies for fastest gold.'
+                        : 'Complete Daily Challenges and story bounties for gold.',
+                    impact: `${shortfall} GB Short`
+                },
+                secondary: { text: 'Do not spend gold elsewhere until Naturalist is unlocked.' },
+                constraints: ['HOLD GOLD']
+            };
+        }
     }
 ];
 
@@ -226,10 +291,11 @@ const DEFAULT_ACTION: RuleResult = {
  * @param {Object} wagonState - Trader wagon state { load: 0-100 }
  * @returns {Object} { phase, priority, primaryAction, secondaryAction, constraints }
  */
-export const analyzeProfile = (profile: RDOProfile = {} as RDOProfile, wagonState: WagonState = { load: 0 }): ActionRecommendation => {
+export const analyzeProfile = (profileInput?: RDOProfile | null, wagonState?: WagonState | null): ActionRecommendation => {
+    const profile = profileInput || ({} as RDOProfile);
     // Normalize wagon input
     const normalizedWagon: WagonState = {
-        load: typeof wagonState.load === 'number'
+        load: typeof wagonState?.load === 'number'
             ? wagonState.load
             : sel.safeGetNumber(wagonState, 'fillPercent', 0)
     };
@@ -249,7 +315,7 @@ export const analyzeProfile = (profile: RDOProfile = {} as RDOProfile, wagonStat
 
     // Global constraint layer - safety net for gold
     const globalConstraints = new Set(result.constraints || []);
-    if (!sel.isGoldSafe(profile)) {
+    if (!result.allowGoldSpend && !sel.isGoldSafe(profile)) {
         globalConstraints.add('HOLD GOLD');
     }
 
@@ -273,10 +339,11 @@ export const analyzeProfile = (profile: RDOProfile = {} as RDOProfile, wagonStat
  * @param {Object} wagonState - Wagon state { load: 0-100 }
  * @returns {Object} Full analysis + diagnostic metadata
  */
-export const explainAnalysis = (profile: RDOProfile = {} as RDOProfile, wagonState: WagonState = { load: 0 }): ExplainedRecommendation => {
+export const explainAnalysis = (profileInput?: RDOProfile | null, wagonState?: WagonState | null): ExplainedRecommendation => {
+    const profile = profileInput || ({} as RDOProfile);
     // Normalize wagon input
     const normalizedWagon: WagonState = {
-        load: typeof wagonState.load === 'number'
+        load: typeof wagonState?.load === 'number'
             ? wagonState.load
             : sel.safeGetNumber(wagonState, 'fillPercent', 0)
     };
@@ -320,7 +387,7 @@ export const explainAnalysis = (profile: RDOProfile = {} as RDOProfile, wagonSta
 
     // Global constraint layer
     const globalConstraints = new Set(result.constraints || []);
-    if (!sel.isGoldSafe(profile)) {
+    if (!result.allowGoldSpend && !sel.isGoldSafe(profile)) {
         globalConstraints.add('HOLD GOLD');
     }
 

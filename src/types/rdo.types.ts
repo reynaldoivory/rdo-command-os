@@ -63,6 +63,7 @@ export type VectorCategory =
   | 'BOUNTY'
   | 'COLLECTOR'
   | 'MOONSHINER'
+  | 'NATURALIST'
   | 'FREE_ROAM'
   | 'DAILIES';
 
@@ -94,6 +95,8 @@ export interface RuleResult {
   primary: ActionDetail;
   secondary: SecondaryAction | null;
   constraints: string[];
+  /** When true, the global HOLD GOLD safety net is suppressed (rule intends a gold purchase) */
+  allowGoldSpend?: boolean;
 }
 
 export interface ActionRecommendation {

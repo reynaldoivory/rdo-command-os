@@ -25,9 +25,14 @@
   },
   "size-limit": [
     {
-      "path": "dist/assets/*.js",
+      "path": "dist/assets/index-*.js",
       "limit": "110 kB",
       "name": "Main JS Bundle"
+    },
+    {
+      "path": "dist/assets/*.js",
+      "limit": "125 kB",
+      "name": "Total JS (main + lazy chunks)"
     },
     {
       "path": "dist/assets/*.css",

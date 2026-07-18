@@ -167,8 +167,10 @@ async function fetchDailies() {
  * @returns {Object} { dailies, loading, error, refresh, completedIds, toggleComplete }
  */
 export function useDailies() {
-    const [dailies, setDailies] = useState(null);
-    const [loading, setLoading] = useState(true);
+    // Hydrate from cache in the initializer so the mount effect never needs a
+    // synchronous setState (react-hooks/set-state-in-effect)
+    const [dailies, setDailies] = useState(() => getCachedDailies());
+    const [loading, setLoading] = useState(dailies === null);
     const [error, setError] = useState(null);
 
     // Track completed challenges in localStorage
@@ -225,10 +227,29 @@ export function useDailies() {
         }
     }, []);
 
-    // Initial load
+    // Initial load — only needed when the cache initializer came up empty.
+    // Fetches directly so no synchronous setState runs inside the effect;
+    // loadDailies (with its sync loading flip) stays for user-triggered refresh.
     useEffect(() => {
-        loadDailies();
-    }, [loadDailies]);
+        if (dailies !== null) return;
+        let cancelled = false;
+        (async () => {
+            try {
+                const data = await fetchDailies();
+                cacheDailies(data);
+                if (!cancelled) setDailies(data);
+            } catch (err) {
+                if (!cancelled) {
+                    setError(err.message);
+                    setDailies(FALLBACK_DAILIES);
+                }
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        })();
+        return () => { cancelled = true; };
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only; cache hits hydrate via initializers
+    }, []);
 
     // Toggle challenge completion
     const toggleComplete = useCallback((challengeId) => {
