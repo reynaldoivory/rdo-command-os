@@ -24,6 +24,8 @@ export default defineConfig({
   test: {
     globals: true,
     setupFiles: [],
+    // Playwright E2E specs live in tests/ and must not be collected by Vitest
+    exclude: ['**/node_modules/**', '**/dist/**', 'tests/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
