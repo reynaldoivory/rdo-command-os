@@ -1,5 +1,3 @@
-/* eslint-env node */
-/* global process */
 // Pre-Migration Checklist Script
 // Run this on current system (laptop) before migration
 

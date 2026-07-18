@@ -1,5 +1,3 @@
-/* eslint-env node */
-/* global process */
 // Migration Validation Script
 // Run this on new system to verify setup is correct
 

@@ -3,13 +3,21 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "description": "RDO Command OS — Red Dead Online decision engine and dashboard",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reynaldoivory/rdo-command-os.git"
+  },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "migrate": "tsx src/scripts/run_migration.ts",
-    "test": "vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
@@ -41,8 +49,7 @@
     }
   ],
   "lint-staged": {
-    "*.{js,jsx}": "eslint --fix",
-    "*.css": "echo 'CSS staged'"
+    "*.{js,jsx}": "eslint --fix"
   },
   "dependencies": {
     "fuse.js": "^7.1.0",

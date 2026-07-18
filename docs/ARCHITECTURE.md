@@ -16,7 +16,7 @@ Context-First React app. No prop drilling. State managed via ProfileContext.
 
 - `src/components/widgets/` - Reusable UI panels (Wallet, Roles, MissionControl, etc.)
 
-- `src/components/layout/` - Dashboard orchestrator
+- `src/App.jsx` - inline Dashboard orchestrator (`src/components/layout/Dashboard.jsx` is an unused older copy)
 
 - `src/components/common/` - Shared UI primitives (ItemImage, etc.)
 

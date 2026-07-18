@@ -1,4 +1,3 @@
-/* eslint-env node */
 /**
  * ═══════════════════════════════════════════════════════════════════════════
  * RDO COMMAND - OCR Catalog Ingestion Engine
@@ -120,7 +119,6 @@ async function processImage(imagePath) {
             {
                 logger: m => {
                     if (m.status === 'recognizing text') {
-                        // eslint-disable-next-line no-undef
                         process.stdout.write(`\r   Progress: ${Math.floor(m.progress * 100)}%`);
                     }
                 }

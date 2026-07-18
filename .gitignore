@@ -26,6 +26,13 @@ dist-ssr
 # Bundle analysis output
 stats.html
 
+# Environment files (secrets never belong in git)
+.env
+.env.*
+
+# Catalog ingestion input (see scripts/ingest-catalog.js)
+ingest_queue/
+
 # Test coverage
 coverage/
 
