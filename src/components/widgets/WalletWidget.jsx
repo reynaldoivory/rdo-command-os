@@ -3,12 +3,13 @@ import { useProfile } from '../../context';
 import { getXPFromLevel } from '../../utils/rdo-logic';
 import { User, DollarSign, Coins, Star, Edit2, Check, X, Award } from 'lucide-react';
 
-const InputRow = ({ icon, label, value, onChange, type, disabled }) => (
+const InputRow = ({ icon, label, value, onChange, type, disabled, testId }) => (
     <div className="bg-black/30 p-3 rounded-lg border border-white/5 flex justify-between items-center">
         <div className="flex items-center gap-2 text-rdo-tan">{icon} {label}</div>
         <input
-            type={type} 
-            value={value} 
+            data-testid={testId}
+            type={type}
+            value={value}
             onChange={onChange}
             disabled={disabled}
             className={`bg-transparent text-right font-mono font-bold text-xl w-32 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 rounded px-2 text-rdo-paper ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
@@ -88,35 +89,39 @@ export const WalletWidget = () => {
             </div>
             <div className="space-y-4">
                 <InputRow
-                    icon={<Star size={16} />} 
-                    label="Rank" 
-                    value={isEditing ? editValues.rank : level} 
+                    icon={<Star size={16} />}
+                    label="Rank"
+                    value={isEditing ? editValues.rank : level}
                     type="number"
                     disabled={!isEditing}
+                    testId="wallet-rank-input"
                     onChange={e => setEditValues({ ...editValues, rank: e.target.value })}
                 />
                 <InputRow
-                    icon={<Award size={16} />} 
-                    label="Tokens" 
-                    value={isEditing ? editValues.tokens : (profile.tokens ?? 0)} 
+                    icon={<Award size={16} />}
+                    label="Tokens"
+                    value={isEditing ? editValues.tokens : (profile.tokens ?? 0)}
                     type="number"
                     disabled={!isEditing}
+                    testId="wallet-tokens-input"
                     onChange={e => setEditValues({ ...editValues, tokens: e.target.value })}
                 />
                 <InputRow
-                    icon={<Coins size={16} />} 
-                    label="Gold" 
-                    value={isEditing ? editValues.gold : profile.gold} 
+                    icon={<Coins size={16} />}
+                    label="Gold"
+                    value={isEditing ? editValues.gold : profile.gold}
                     type="number"
                     disabled={!isEditing}
+                    testId="wallet-gold-input"
                     onChange={e => setEditValues({ ...editValues, gold: e.target.value })}
                 />
                 <InputRow
-                    icon={<DollarSign size={16} />} 
-                    label="Cash" 
-                    value={isEditing ? editValues.cash : profile.cash} 
+                    icon={<DollarSign size={16} />}
+                    label="Cash"
+                    value={isEditing ? editValues.cash : profile.cash}
                     type="number"
                     disabled={!isEditing}
+                    testId="wallet-cash-input"
                     onChange={e => setEditValues({ ...editValues, cash: e.target.value })}
                 />
             </div>

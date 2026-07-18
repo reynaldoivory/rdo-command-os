@@ -47,8 +47,9 @@ test.describe('RDO COMMAND OS.25', () => {
     });
 
     test('Catalog Interaction (Add to Cart)', async ({ page }) => {
-        // 1. Find an add-to-cart button by data-testid
-        const addButton = page.getByTestId('add-to-cart-w_rev_navy');
+        // 1. Find the Navy Revolver's add-to-cart button (w004 in src/data/catalog.js —
+        // the old 'w_rev_navy' id only ever existed as a docs example)
+        const addButton = page.getByTestId('add-to-cart-w004');
         await expect(addButton).toBeVisible();
 
         // 2. Click Add
@@ -61,13 +62,17 @@ test.describe('RDO COMMAND OS.25', () => {
     // --- LOGIC TESTS ---
 
     test('Wallet Input Logic', async ({ page }) => {
-        // Use semantic test IDs for stable selectors
+        // Wallet inputs are disabled until edit mode is entered
+        await page.getByTitle('Edit wallet values').click();
+
         const cashInput = page.getByTestId('wallet-cash-input');
 
         // Fill cash value
         await cashInput.fill('500');
 
-        // Verify value persisted
+        // Verify value persisted, then save back to the profile
+        await expect(cashInput).toHaveValue('500');
+        await page.getByTitle('Save changes').click();
         await expect(cashInput).toHaveValue('500');
     });
 
